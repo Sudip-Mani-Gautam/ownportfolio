@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Login & Registration Form</title>
+  <style>
+    /* Reset and Base Styles */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      /* Ensure Poppins is imported or use a fallback */
+      font-family: "Poppins", sans-serif; 
+    }
+    body {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      background: linear-gradient(135deg, #dbe6f6, #c5796d);
+    }
+    /* Main Container */
+    .container {
+      position: relative;
+      width: 850px;
+      height: 500px;
+      background: #fff;
+      border-radius: 15px;
+      overflow: hidden;
+      box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+      /* Note: The transition here is for general container changes, 
+         but we rely on form/blue-bg transitions for the main effect */
+    }
+
+    /* Forms Layout */
+    .forms-container {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      top: 0;
+      left: 0;
+      display: flex;
+      /* Default position for sign-in form is left */
+      z-index: 1; 
+      transition: all 0.6s ease-in-out;
+    }
+
+    form {
+      width: 50%;
+      padding: 80px 40px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      flex-shrink: 0; /* Prevents forms from shrinking */
+    }
+
+    h2 {
+      font-size: 2rem;
+      font-weight: 700;
+      margin-bottom: 20px;
+      color: #333;
+      text-align: center;
+    }
+
+    /* Input Fields */
+    .input-field {
+      position: relative;
+      margin: 10px 0;
+    }
+
+    .input-field input {
+      width: 100%;
+      padding: 12px 45px 12px 15px;
+      border: none;
+      outline: none;
+      border-radius: 8px;
+      background: #f0f0f0;
+      font-size: 1rem;
+    }
+
+    .input-field i {
+      position: absolute;
+      right: 15px;
+      top: 50%;
+      transform: translateY(-50%); /* Center icon vertically */
+      color: #888;
+    }
+
+    /* Buttons */
+    button {
+      margin-top: 15px;
+      padding: 12px 0;
+      border: none;
+      outline: none;
+      border-radius: 8px;
+      background: #5372f0;
+      color: #fff;
+      font-weight: 600;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    button:hover {
+      background: #3c56b8;
+    }
+
+    /* Social Media Links */
+    .social-text {
+      text-align: center;
+      margin-top: 15px;
+      font-size: 0.9rem;
+      color: #555;
+    }
+
+    .social-media {
+      display: flex;
+      justify-content: center;
+      margin-top: 10px;
+    }
+
+    .social-media a {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 40px;
+      height: 40px;
+      background: #f0f0f0;
+      border-radius: 8px;
+      margin: 0 5px;
+      color: #333;
+      text-decoration: none;
+      font-size: 1.2rem;
+      transition: 0.3s;
+    }
+
+    .social-media a:hover {
+      background: #5372f0;
+      color: #fff;
+    }
+
+    /* Blue Panel (Background/Overlay) */
+    .blue-bg {
+      position: absolute;
+      top: 0;
+      right: 0; /* Default position for sign-in view */
+      width: 50%;
+      height: 100%;
+      background: #5372f0;
+      border-radius: 150px 0 0 150px;
+      color: #fff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 40px;
+      z-index: 2; /* Must be above the forms container */
+      transition: all 0.6s ease-in-out;
+    }
+    
+    .blue-bg-content {
+        transition: opacity 0.3s ease-in-out 0.3s; /* Delay opacity change */
+    }
+
+    .blue-bg h3 {
+      font-size: 1.8rem;
+      margin-bottom: 10px;
+    }
+
+    .blue-bg p {
+      font-size: 0.9rem;
+      margin-bottom: 20px;
+    }
+
+    .blue-bg button {
+      border: 2px solid #fff;
+      background: transparent;
+      color: #fff;
+    }
+
+    /* Initial state adjustments for forms */
+    .forms-container .sign-up-form {
+        /* Pushes the sign-up form off the right side initially */
+        margin-left: -50%; 
+    }
+
+    /* Sign-Up Mode Activation */
+    .container.sign-up-mode .forms-container {
+        /* Moves the forms container to show the sign-up form */
+        transform: translateX(50%);
+    }
+
+    .container.sign-up-mode .blue-bg {
+      /* Moves the blue panel to the left side */
+      right: 50%;
+      border-radius: 0 150px 150px 0;
+    }
+    
+    /* Toggle button content for sign-up mode */
+    .blue-bg.sign-up-mode .content-sign-up {
+        display: flex;
+    }
+
+    /* Hide the default content in sign-up mode */
+    .blue-bg.sign-up-mode .content-sign-in {
+        display: none;
+    }
+
+    /* Initial content visibility */
+    .blue-bg .content-sign-up {
+        display: none;
+        flex-direction: column;
+        align-items: center;
+    }
+    .blue-bg .content-sign-in {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+
+    /* Media Queries */
+    @media (max-width: 880px) { /* Adjust breakpoint for a better mobile transition */
+      .container {
+        width: 100%;
+        max-width: 400px; /* Constrain on smaller screens */
+        height: auto;
+        min-height: 550px;
+        box-shadow: none;
+      }
+      body {
+          padding: 20px;
+      }
+      .forms-container {
+        position: static;
+        flex-direction: column;
+        height: auto;
+        transform: none !important; /* Disable main form container transform */
+        transition: none; /* Disable forms container transition */
+      }
+      form {
+        width: 100%;
+        padding: 40px 20px;
+        order: 1; /* Default order, sign-in is first */
+        margin-left: 0 !important; /* Reset margin */
+        transition: all 0.6s ease-in-out;
+      }
+      
+      .sign-up-form {
+        position: absolute;
+        top: 0;
+        left: 0;
+        opacity: 0;
+        z-index: -1;
+      }
+
+      .blue-bg {
+        position: static;
+        width: 100%;
+        height: 150px; /* Give it some height */
+        border-radius: 15px 15px 0 0;
+        right: 0;
+        order: 0; /* Place blue-bg before forms on mobile */
+        display: flex;
+        z-index: 1;
+        transition: none;
+      }
+      
+      .container.sign-up-mode .sign-in-form {
+        position: absolute;
+        top: 0;
+        left: 0;
+        opacity: 0;
+        z-index: -1;
+      }
+      
+      .container.sign-up-mode .sign-up-form {
+        position: static;
+        opacity: 1;
+        z-index: 1;
+      }
+      
+      .blue-bg h3, .blue-bg p {
+          margin: 5px 0;
+      }
+      .blue-bg button {
+          padding: 8px 15px;
+          margin-top: 10px;
+      }
+      
+      .container.sign-up-mode .blue-bg {
+        /* No need for right: 50% or border-radius change on mobile */
+        border-radius: 15px 15px 0 0; 
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="forms-container">
+      <form action="#" class="sign-up-form">
+        <h2>Registration</h2>
+        <div class="input-field">
+          <input type="text" placeholder="Username" required />
+          <i class="fas fa-user"></i>
+        </div>
+        <div class="input-field">
+          <input type="email" placeholder="Email" required />
+          <i class="fas fa-envelope"></i>
+        </div>
+        <div class="input-field">
+          <input type="password" placeholder="Password" required />
+          <i class="fas fa-lock"></i>
+        </div>
+        <button type="submit">Register</button>
+        <p class="social-text">or register with social platforms</p>
+        <div class="social-media">
+          <a href="#"><i class="fab fa-google"></i></a>
+          <a href="#"><i class="fab fa-facebook-f"></i></a>
+          <a href="#"><i class="fab fa-github"></i></a>
+          <a href="#"><i class="fab fa-linkedin-in"></i></a>
+        </div>
+      </form>
+
+      <form action="#" class="sign-in-form">
+        <h2>Login</h2>
+        <div class="input-field">
+          <input type="text" placeholder="Username" required />
+          <i class="fas fa-user"></i>
+        </div>
+        <div class="input-field">
+          <input type="password" placeholder="Password" required />
+          <i class="fas fa-lock"></i>
+        </div>
+        <a href="#" style="font-size:0.9rem;color:#555;margin-top:5px;">Forgot password?</a>
+        <button type="submit">Login</button>
+        <p class="social-text">or login with social platforms</p>
+        <div class="social-media">
+          <a href="#"><i class="fab fa-google"></i></a>
+          <a href="#"><i class="fab fa-facebook-f"></i></a>
+          <a href="#"><i class="fab fa-github"></i></a>
+          <a href="#"><i class="fab fa-linkedin-in"></i></a>
+        </div>
+      </form>
+    </div>
+
+    <div class="blue-bg">
+        <div class="content-sign-in">
+            <h3>Welcome Back!</h3>
+            <p>Don't have an account?</p>
+            <button id="signUpBtn">Register</button>
+        </div>
+        <div class="content-sign-up">
+            <h3>Hello, Friend!</h3>
+            <p>Already have an account?</p>
+            <button id="signInBtn">Login</button>
+        </div>
+    </div>
+  </div>
+
+  <script src="https://kit.fontawesome.com/a81368914c.js" crossorigin="anonymous"></script>
+  <script>
+    const container = document.querySelector(".container");
+    const signUpBtn = document.getElementById("signUpBtn");
+    const signInBtn = document.getElementById("signInBtn");
+
+    // Event listener to switch to Sign-Up Mode
+    signUpBtn.addEventListener("click", () => {
+      container.classList.add("sign-up-mode");
+      document.querySelector(".blue-bg").classList.add("sign-up-mode");
+    });
+
+    // Event listener to switch to Sign-In Mode
+    signInBtn.addEventListener("click", () => {
+      container.classList.remove("sign-up-mode");
+      document.querySelector(".blue-bg").classList.remove("sign-up-mode");
+    });
+  </script>
+</body>
+</html>

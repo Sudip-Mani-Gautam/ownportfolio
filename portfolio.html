@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Portfolio — Sudip</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="light-theme">
+  <!-- NAVBAR -->
+  <nav class="navbar navbar-expand-lg navbar-light shadow-sm py-3">
+    <div class="container">
+      <a class="navbar-brand fw-bold" href="index.html">Sudip M. Gautam</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMain">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <div class="collapse navbar-collapse" id="navMain">
+        <ul class="navbar-nav ms-auto align-items-lg-center">
+          <li class="nav-item"><a class="nav-link" href="index.html">Home</a></li>
+          <li class="nav-item"><a class="nav-link" href="about.html">About</a></li>
+          <li class="nav-item"><a class="nav-link" href="portfolio.html">Portfolio</a></li>
+          <li class="nav-item"><a class="nav-link" href="contact.html">Contact</a></li>
+          <li class="nav-item d-lg-none"><a class="nav-link" href="#">Others</a></li>
+          <li class="nav-item ms-3">
+            <!-- Theme toggle -->
+            <div class="theme-toggle" id="themeToggle" title="Toggle light/dark">
+              <span class="icon-sun">☀️</span>
+              <div class="toggle-knob"></div>
+              <span class="icon-moon">🌙</span>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <main class="container py-5">
+    <div class="row">
+      <aside class="col-lg-4 mb-4">
+        <div class="card p-3">
+          <img src="/assets/img/image.webp" class="img-fluid rounded mb-3" alt="Profile">
+          <h4 class="mb-0">Sudip Mani Gautam</h4>
+          <p class="small text-muted mb-2">Full-Stack Developer (React | Java | Node.js)</p>
+
+          <div class="mb-2">
+            <strong>Contact</strong>
+            <div class="small">Phone: +977 9825002384</div>
+            <div class="small">Email: sudipmanigautam3@gmail.com</div>
+          </div>
+
+          <div>
+            <strong>Social</strong>
+            <div class="small">
+              <a href="https://www.linkedin.com/in/sudip-mani-gautam-038967285/" target="_blank">LinkedIn</a> •
+              <a href="https://github.com/Sudip-Mani-Gautam" target="_blank">GitHub</a>
+            </div>
+          </div>
+        </div>
+      </aside>
+
+      <section class="col-lg-8">
+        <div class="d-flex justify-content-between align-items-start mb-3">
+          <h3>Resume & Projects</h3>
+          <div>
+            <a class="btn btn-outline-primary me-2" href="assets/resume.pdf" target="_blank">Open CV</a>
+            <a class="btn btn-primary" href="assets/resume.pdf" download>Download PDF</a>
+          </div>
+        </div>
+
+        <article class="mb-4">
+          <h5>Career Objective</h5>
+          <p>Aspiring full-stack developer with a solid foundation in React and Java. Skilled in JavaScript, HTML, and CSS, with hands-on experience in building end-to-end web solutions. Eager to contribute to impactful software projects and grow in a fast-paced, innovative environment.</p>
+        </article>
+
+        <article class="mb-4">
+          <h5>Technical Skills</h5>
+          <ul>
+            <li>Languages: Java, JavaScript, Python, HTML, CSS</li>
+            <li>Databases: MySQL, Oracle, MongoDB</li>
+            <li>Tools & IDEs: Docker, Postman, GitHub, VSCode, IntelliJ</li>
+          </ul>
+        </article>
+
+        <article class="mb-4">
+          <h5>Highlighted Projects</h5>
+          <div class="accordion" id="projectsAcc">
+            <div class="accordion-item">
+              <h2 class="accordion-header" id="h1">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#c1">Q&A Platform</button>
+              </h2>
+              <div id="c1" class="accordion-collapse collapse" data-bs-parent="#projectsAcc">
+                <div class="accordion-body">
+                  Dynamic Q&A platform with CRUD operations, Node.js backend and JS frontend, authentication and data management. (Repo links in CV). :contentReference[oaicite:1]{index=1}
+                </div>
+              </div>
+            </div>
+
+            <div class="accordion-item">
+              <h2 class="accordion-header" id="h2">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#c2">Hotel Management System</button>
+              </h2>
+              <div id="c2" class="accordion-collapse collapse" data-bs-parent="#projectsAcc">
+                <div class="accordion-body">
+                  Group project using Java (JSP/Servlets) and MySQL — booking, customers, billing (MVC). :contentReference[oaicite:2]{index=2}
+                </div>
+              </div>
+            </div>
+
+            <div class="accordion-item">
+              <h2 class="accordion-header" id="h3">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#c3">E-Commerce Website</button>
+              </h2>
+              <div id="c3" class="accordion-collapse collapse" data-bs-parent="#projectsAcc">
+                <div class="accordion-body">
+                  E-commerce front-end with product listing, cart demo and user auth (student project). :contentReference[oaicite:3]{index=3}
+                </div>
+              </div>
+            </div>
+          </div>
+        </article>
+
+      </section>
+    </div>
+  </main>
+
+  <footer class="bg-white border-top py-3 text-center small">© <span id="year2"></span> Sudip M. Gautam</footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>

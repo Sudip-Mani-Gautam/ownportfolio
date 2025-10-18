@@ -1,0 +1,885 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>About — Sudip</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+  <style>
+    /*
+    * ======================================
+    * CSS STYLES: Cyberpunk Glow Theme & Animations
+    * ======================================
+    */
+    :root {
+      --primary-color: #0078d7;     /* Professional blue */
+      --secondary-color: #00b894;   /* Soft teal green accent */
+      --background-color: #ffffff;  /* White main background */
+      --card-bg-color: #f8f9fb;     /* Soft gray card background */
+      --text-color: #333333;        /* Dark text for readability */
+      --accent-color: #0056b3;      /* Deep blue for headings */
+      --border-radius: 10px;
+      --shadow-color: rgba(0, 0, 0, 0.1);
+    }
+
+    /* --- Global Reset --- */
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      line-height: 1.6;
+      color: var(--text-color);
+      background-color: var(--background-color);
+      overflow-x: hidden;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 25px;
+    }
+
+    h1, h2, h3 {
+      margin-bottom: 0.5em;
+      color: var(--accent-color);
+    }
+
+    h2 {
+      font-size: 2.8rem;
+      text-align: center;
+      margin-bottom: 50px;
+      position: relative;
+      text-transform: uppercase;
+    }
+
+    h2::after {
+      content: '';
+      position: absolute;
+      bottom: -15px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 100px;
+      height: 3px;
+      background-color: var(--secondary-color);
+      border-radius: 2px;
+    }
+
+    /* Links and Buttons */
+    a {
+      text-decoration: none;
+      color: var(--primary-color);
+      transition: color 0.3s;
+    }
+
+    a:hover { color: var(--secondary-color); }
+
+    .btn {
+      display: inline-block;
+      padding: 12px 25px;
+      margin-top: 20px;
+      background-color: var(--primary-color);
+      color: #fff;
+      border: none;
+      border-radius: var(--border-radius);
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      transition: background-color 0.3s, transform 0.2s, box-shadow 0.3s;
+      box-shadow: 0 4px 10px var(--shadow-color);
+    }
+
+    .btn:hover {
+      background-color: var(--secondary-color);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+    }
+
+    .btn-small {
+      display: inline-block;
+      padding: 8px 16px;
+      background-color: var(--primary-color);
+      color: #fff;
+      border: none;
+      border-radius: var(--border-radius);
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      transition: background-color 0.3s, transform 0.2s, box-shadow 0.3s;
+      box-shadow: 0 4px 10px var(--shadow-color);
+      font-size: 0.9rem;
+    }
+
+    .btn-small:hover {
+      background-color: var(--secondary-color);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+      color: #fff;
+    }
+
+    /* Progress Bar */
+    #progress-bar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 4px;
+      background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
+      width: 0%;
+      z-index: 9999;
+    }
+
+    /* Header */
+    header {
+      background-color: #f5f6fa;
+      border-bottom: 3px solid var(--primary-color);
+      box-shadow: 0 4px 12px var(--shadow-color);
+      padding: 15px 0;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+    }
+
+    header .container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .profile {
+      display: flex;
+      align-items: center;
+    }
+
+    .profile-img {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      margin-right: 15px;
+      object-fit: cover;
+      border: 3px solid var(--primary-color);
+    }
+
+    .profile h1 {
+      font-size: 1.8rem;
+      color: var(--accent-color);
+    }
+
+    .tagline {
+      font-size: 0.9rem;
+      color: var(--secondary-color);
+    }
+
+    nav ul {
+      list-style: none;
+      display: flex;
+      flex-wrap: wrap;
+      margin: 0;
+      padding: 0;
+    }
+
+    nav ul li { margin-left: 25px; }
+
+    nav ul li a {
+      font-weight: 600;
+      color: var(--accent-color);
+      padding: 8px 0;
+      position: relative;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+    }
+
+    nav ul li a::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 0;
+      height: 2px;
+      background-color: var(--secondary-color);
+      transition: width 0.3s;
+    }
+
+    nav ul li a:hover {
+      color: var(--primary-color);
+    }
+
+    nav ul li a:hover::after { width: 100%; }
+
+    /* Section Layout */
+    main { padding-top: 60px; }
+
+    .section {
+      padding: 80px 0;
+      margin-bottom: 40px;
+      background-color: var(--card-bg-color);
+      border-radius: var(--border-radius);
+      box-shadow: 0 5px 20px var(--shadow-color);
+    }
+
+    /* About */
+    #about p {
+      max-width: 900px;
+      margin: 0 auto 20px auto;
+      text-align: center;
+      font-size: 1.2rem;
+    }
+
+    /* Skills */
+    .skills-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 30px;
+      padding: 0 50px;
+    }
+
+    .skill-category {
+      background-color: #fff;
+      padding: 25px;
+      border-radius: var(--border-radius);
+      border: 1px solid #e3e7eb;
+      box-shadow: 0 4px 12px var(--shadow-color);
+      text-align: center;
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+
+    .skill-category:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+    }
+
+    .skill-category h3 {
+      color: var(--primary-color);
+      border-bottom: 2px solid var(--secondary-color);
+      padding-bottom: 10px;
+      margin-bottom: 20px;
+      font-size: 1.4rem;
+    }
+
+    .skill-category ul { list-style: none; padding: 0; }
+
+    .skill-category ul li {
+      padding: 8px 0;
+      font-size: 1rem;
+    }
+
+    /* Projects */
+    .projects-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 30px;
+    }
+
+    .project-card {
+      background-color: #fff;
+      border-radius: var(--border-radius);
+      overflow: hidden;
+      border: 1px solid #e0e0e0;
+      box-shadow: 0 5px 15px var(--shadow-color);
+      transition: transform 0.3s, box-shadow 0.3s;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .project-card:hover {
+      transform: scale(1.02);
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+    }
+
+    .project-card img {
+      width: 100%;
+      height: 220px;
+      object-fit: cover;
+      border-bottom: 3px solid var(--secondary-color);
+    }
+
+    .project-content {
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      flex-grow: 1;
+    }
+
+    .project-content h3 {
+      color: var(--accent-color);
+      margin-top: 0;
+    }
+
+    .project-content p {
+      flex-grow: 1;
+      font-size: 0.95rem;
+      color: #444;
+      margin-bottom: 15px;
+    }
+
+    .tech-used span {
+      display: inline-block;
+      background-color: var(--card-bg-color);
+      color: var(--primary-color);
+      padding: 5px 10px;
+      border-radius: 5px;
+      font-size: 0.8rem;
+      margin-right: 8px;
+      margin-bottom: 8px;
+      border: 1px solid var(--primary-color);
+    }
+
+    /* Education Timeline */
+    .timeline {
+      position: relative;
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 20px 0;
+    }
+
+    .timeline::after {
+      content: '';
+      position: absolute;
+      width: 4px;
+      background-color: #dce3eb;
+      top: 0;
+      bottom: 0;
+      left: 50%;
+      margin-left: -2px;
+    }
+
+    .timeline-item {
+      padding: 10px 40px;
+      position: relative;
+      width: 50%;
+    }
+
+    .timeline-item:nth-child(odd) { left: 0; }
+    .timeline-item:nth-child(even) { left: 50%; padding-left: 60px; }
+    .timeline-item:nth-child(even)::after { left: -9px; }
+
+    .timeline-item::after {
+      content: '';
+      position: absolute;
+      width: 16px;
+      height: 16px;
+      right: -8px;
+      background-color: var(--primary-color);
+      border: 4px solid #fff;
+      top: 30px;
+      border-radius: 50%;
+      z-index: 1;
+    }
+
+    .timeline-content {
+      padding: 25px 30px;
+      background-color: #fff;
+      border-radius: var(--border-radius);
+      box-shadow: 0 5px 15px var(--shadow-color);
+      border-left: 4px solid var(--secondary-color);
+    }
+
+    .timeline-date {
+      font-weight: bold;
+      color: var(--primary-color);
+      margin-bottom: 10px;
+    }
+
+    /* Contact Section */
+    #contact {
+      background-color: #f5f6fa;
+      border-top: 5px solid var(--primary-color);
+    }
+
+    .contact-grid {
+      display: flex;
+      gap: 50px;
+      padding: 0 50px;
+    }
+
+    .contact-info { flex: 1; }
+    .contact-form { flex: 1; }
+
+    .contact-info h3 { color: var(--accent-color); margin-bottom: 25px; }
+
+    .contact-info p {
+      display: flex;
+      align-items: center;
+      margin-bottom: 20px;
+      font-size: 1.1rem;
+    }
+
+    .contact-info i {
+      font-size: 1.4rem;
+      margin-right: 15px;
+      color: var(--primary-color);
+    }
+
+    .social-links a {
+      font-size: 1.8rem;
+      margin-right: 20px;
+      color: var(--accent-color);
+      transition: transform 0.3s;
+    }
+
+    .social-links a:hover {
+      color: var(--secondary-color);
+      transform: translateY(-4px);
+    }
+
+    .contact-form input[type="text"],
+    .contact-form input[type="email"],
+    .contact-form textarea {
+      width: 100%;
+      padding: 15px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      background-color: #fff;
+      color: var(--text-color);
+      font-size: 1rem;
+    }
+
+    .contact-form input:focus,
+    .contact-form textarea:focus {
+      border-color: var(--primary-color);
+      outline: none;
+      box-shadow: 0 0 5px rgba(0, 120, 215, 0.3);
+    }
+
+    .contact-form .btn {
+      width: 100%;
+      margin-top: 10px;
+    }
+
+    /* Footer */
+    footer {
+      background-color: #f0f2f5;
+      color: #555;
+      text-align: center;
+      padding: 25px 0;
+      border-top: 3px solid var(--primary-color);
+    }
+
+    /* Theme Toggle */
+    .theme-toggle {
+      display: flex;
+      align-items: center;
+      background-color: #e0e0e0;
+      border-radius: 20px;
+      padding: 4px;
+      cursor: pointer;
+      position: relative;
+      width: 60px;
+      height: 30px;
+    }
+
+    .theme-toggle .toggle-knob {
+      position: absolute;
+      width: 22px;
+      height: 22px;
+      background-color: white;
+      border-radius: 50%;
+      left: 4px;
+      transition: transform 0.3s;
+    }
+
+    .theme-toggle .icon-sun,
+    .theme-toggle .icon-moon {
+      font-size: 14px;
+      z-index: 1;
+    }
+
+    .theme-toggle .icon-sun {
+      margin-right: auto;
+    }
+
+    .theme-toggle .icon-moon {
+      margin-left: auto;
+    }
+
+    /* Dark Theme */
+    body.dark-theme {
+      --background-color: #1a1a2e;
+      --card-bg-color: #16213e;
+      --text-color: #e6e6e6;
+      --accent-color: #6c63ff;
+      --shadow-color: rgba(0, 0, 0, 0.3);
+    }
+
+    body.dark-theme header {
+      background-color: #16213e;
+    }
+
+    body.dark-theme .section {
+      background-color: var(--card-bg-color);
+    }
+
+    body.dark-theme .skill-category,
+    body.dark-theme .project-card,
+    body.dark-theme .timeline-content {
+      background-color: #1a1a2e;
+      color: var(--text-color);
+    }
+
+    body.dark-theme .theme-toggle {
+      background-color: #6c63ff;
+    }
+
+    body.dark-theme .theme-toggle .toggle-knob {
+      transform: translateX(30px);
+    }
+
+    /* Animation */
+    @keyframes fadeInSlideUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .animated {
+      opacity: 0;
+    }
+
+    /* Responsive */
+    @media screen and (max-width: 992px) {
+      .skills-grid { padding: 0 15px; }
+      .contact-grid { flex-direction: column; padding: 0 20px; }
+    }
+
+    @media screen and (max-width: 768px) {
+      h2 { font-size: 2.2rem; }
+      header .container { flex-direction: column; }
+      nav ul { justify-content: center; margin-top: 10px; }
+      nav ul li { margin: 5px 10px; }
+      .timeline::after { left: 30px; }
+      .timeline-item { width: 100%; padding-left: 60px; left: 0 !important; }
+      .timeline-item::after { left: 21px; right: auto; }
+    }
+  </style>
+</head>
+<body class="light-theme">
+  <div id="progress-bar"></div>
+
+  <header>
+    <!-- NAVBAR -->
+    <nav class="navbar navbar-expand-lg navbar-light shadow-sm py-3">
+      <div class="container">
+        <a class="navbar-brand fw-bold" href="index.html">
+          <div class="profile">
+            <img src="/assets/img/image.webp" alt="Sudip Mani Gautam" class="profile-img">
+            <div>
+              <h1>Sudip Mani Gautam</h1>
+              <p class="tagline">Aspiring Computing Professional | BSc Hons Computing Student</p>
+            </div>
+          </div>
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMain">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navMain">
+          <ul class="navbar-nav ms-auto align-items-lg-center">
+            <li class="nav-item"><a class="nav-link" href="index.html">Home</a></li>
+            <li class="nav-item"><a class="nav-link" href="about.html">About</a></li>
+            <li class="nav-item"><a class="nav-link" href="portfolio.html">Portfolio</a></li>
+            <li class="nav-item"><a class="nav-link" href="contact.html">Contact</a></li>
+            <li class="nav-item">
+              <a href="login.html" class="btn-small">Login</a>
+            </li>
+            <li class="nav-item ms-3">
+              <!-- Theme toggle -->
+              <div class="theme-toggle" id="themeToggle" title="Toggle light/dark">
+                <span class="icon-sun">☀️</span>
+                <div class="toggle-knob"></div>
+                <span class="icon-moon">🌙</span>
+              </div>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+  </header>
+
+  <main class="container">
+    <section id="about" class="section animated">
+      <h2>About Me</h2>
+      <p>I am a passionate BSc Hons Computing student with a strong interest in technology and innovation. My journey in computing has equipped me with problem-solving skills and a keen eye for detail. I thrive on challenges and enjoy transforming complex problems into simple, beautiful solutions.</p>
+      <p>When I'm not coding, you can find me exploring new technologies, contributing to open-source projects, or sharing knowledge with fellow tech enthusiasts.</p>
+    </section>
+
+    <section id="skills" class="section animated">
+      <h2>Technical Skills</h2>
+      <div class="skills-grid">
+        <div class="skill-category">
+          <h3>Programming</h3>
+          <ul>
+            <li><i class="fab fa-java"></i> Java</li>
+            <li><i class="fab fa-python"></i> Python</li>
+            <li><i class="fab fa-js-square"></i> JavaScript</li>
+          </ul>
+        </div>
+        <div class="skill-category">
+          <h3>Web Development</h3>
+          <ul>
+            <li><i class="fab fa-html5"></i> HTML5 & CSS3</li>
+            <li><i class="fab fa-react"></i> React.js</li>
+            <li><i class="fab fa-node-js"></i> Node.js</li>
+            <li>Express</li>
+          </ul>
+        </div>
+        <div class="skill-category">
+          <h3>Database</h3>
+          <ul>
+            <li>MySQL</li>
+            <li>MongoDB</li>
+            <li>Firebase</li>
+          </ul>
+        </div>
+        <div class="skill-category">
+          <h3>Tools & Platforms</h3>
+          <ul>
+            <li><i class="fab fa-github"></i> Git & GitHub</li>
+            <li>VS Code</li>
+            <li><i class="fab fa-linux"></i> Linux</li>
+            <li><i class="fab fa-docker"></i> Docker</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section id="projects" class="section animated">
+      <h2>Featured Projects</h2>
+      <div class="projects-grid">
+        <div class="project-card">
+          <img src="assets/Qa Expert.png" alt="Project Q & A Expert">
+          <div class="project-content">
+            <h3>Q & A Expert</h3>
+            <p>A full-stack Question and Answer application with user authentication, register, login, ask, answer, edit delete question and answers and comments.</p>
+            <div class="tech-used">
+              <span>React</span>
+              <span>Node.js</span>
+              <span>MongoDB</span>
+            </div>
+            <a href="#" class="btn">View Project</a>
+          </div>
+        </div>
+
+        <div class="project-card">
+          <img src="assets/projects/project1.jpg" alt="Project E-Commerce Platform">
+          <div class="project-content">
+            <h3>E-Commerce Platform</h3>
+            <p>A full-stack e-commerce application with user authentication, product catalog, and payment integration.</p>
+            <div class="tech-used">
+              <span>React</span>
+              <span>Node.js</span>
+              <span>MongoDB</span>
+            </div>
+            <a href="#" class="btn">View Project</a>
+          </div>
+        </div>
+
+        <div class="project-card">
+          <img src="assets/projects/project2.jpg" alt="Project Task Management App">
+          <div class="project-content">
+            <h3>Task Management App</h3>
+            <p>A productivity application for managing tasks with drag-and-drop functionality and team collaboration features.</p>
+            <div class="tech-used">
+              <span>JavaScript</span>
+              <span>Firebase</span>
+            </div>
+            <a href="#" class="btn">View Project</a>
+          </div>
+        </div>
+
+        <div class="project-card">
+          <img src="https://img.youtube.com/vi/9OEc8-pTVJA/maxresdefault.jpg" alt="Project Student Portal">
+          <div class="project-content">
+            <h3>Student Portal</h3>
+            <p>A comprehensive portal for students to access course materials, submit assignments, and track academic progress.</p>
+            <div class="tech-used">
+              <span>Python</span>
+              <span>Django</span>
+              <span>PostgreSQL</span>
+            </div>
+            <a href="#" class="btn">View Project</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="education" class="section animated">
+      <h2>Education</h2>
+      <div class="timeline">
+        <div class="timeline-item">
+          <div class="timeline-date">2023 - Present</div>
+          <div class="timeline-content">
+            <h3>BSc (Hons) Computing</h3>
+            <p>Itahari International College</p>
+            <ul>
+              <li>Specializing in Software Development</li>
+              <li>Coursework: Algorithms, Database Systems, Web Development, AI Fundamentals</li>
+            </ul>
+          </div>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-date">2020 - 2022</div>
+          <div class="timeline-content">
+            <h3>Xavier International College</h3>
+            <p>ABC College</p>
+            <p>GPA: 3.8/4.0</p>
+            <ul>
+              <li>Science Stream</li>
+              <li>Key subjects: Physics, Chemistry, Math</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="contact" class="section animated">
+      <h2>Get In Touch</h2>
+      <div class="contact-grid">
+        <div class="contact-info">
+          <h3>Contact Information</h3>
+          <p><i class="fas fa-envelope"></i> sudipmanigautam3@gmail.com</p>
+          <p><i class="fas fa-phone"></i> +977 9825002384</p>
+          <p><i class="fas fa-map-marker-alt"></i> Kathmandu, Nepal</p>
+          
+          <div class="social-links">
+            <a href="https://www.facebook.com/SudipManiGautam3" target="_blank"><i class="fab fa-facebook"></i></a>
+            <a href="#" target="_blank"><i class="fab fa-github"></i></a>
+            <a href="#" target="_blank"><i class="fab fa-linkedin"></i></a>
+            <a href="#" target="_blank"><i class="fab fa-twitter"></i></a>
+          </div>
+        </div>
+        <form class="contact-form">
+          <div class="form-group">
+            <input type="text" placeholder="Your Name" required>
+          </div>
+          <div class="form-group">
+            <input type="email" placeholder="Your Email" required>
+          </div>
+          <div class="form-group">
+            <input type="text" placeholder="Subject">
+          </div>
+          <div class="form-group">
+            <textarea placeholder="Your Message" rows="5" required></textarea>
+          </div>
+          <button type="submit" class="btn">Send Message</button>
+        </form>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container">
+      <p>&copy; 2025 Sudip Mani Gautam. All rights reserved.</p>
+      <p> Smg IT Tech </p>
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    // ======================================
+    // JAVASCRIPT: Interactivity and Animations
+    // ======================================
+
+    document.addEventListener('DOMContentLoaded', () => {
+      
+      // --- 1. Smooth Scrolling for Navigation ---
+      const scrollLinks = document.querySelectorAll('a[href^="#"]');
+      scrollLinks.forEach(link => {
+        link.addEventListener('click', function(e) {
+          e.preventDefault();
+          const targetId = this.getAttribute('href');
+          const targetElement = document.querySelector(targetId);
+          if (targetElement) {
+            targetElement.scrollIntoView({
+              behavior: 'smooth',
+              block: 'start'
+            });
+          }
+        });
+      });
+
+      // --- 2. Scroll Progress Bar (Full Page Feature) ---
+      const progressBar = document.getElementById('progress-bar');
+      
+      function updateProgressBar() {
+        const scrollHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+        const scrolled = document.documentElement.scrollTop;
+        const progress = (scrolled / scrollHeight) * 100;
+        progressBar.style.width = progress + '%';
+      }
+
+      // --- 3. Scroll Reveal Animation (Advanced Feature) ---
+      const animatedSections = document.querySelectorAll('.section.animated');
+      
+      const observerOptions = {
+        root: null, 
+        rootMargin: '0px',
+        threshold: 0.1 
+      };
+
+      const observer = new IntersectionObserver((entries, observer) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            // Apply the animation when it enters the viewport
+            entry.target.style.animation = 'fadeInSlideUp 1s ease-out forwards';
+            // Stop observing once animated
+            observer.unobserve(entry.target);
+          }
+        });
+      }, observerOptions);
+
+      animatedSections.forEach(section => {
+        observer.observe(section);
+      });
+
+      // --- 4. Contact Form Handling ---
+      const contactForm = document.querySelector('.contact-form');
+      if (contactForm) {
+        contactForm.addEventListener('submit', function(e) {
+          e.preventDefault();
+          
+          const nameInput = this.querySelector('input[placeholder="Your Name"]');
+          const name = nameInput ? nameInput.value : 'Sudip';
+
+          console.log(`Form Submitted by ${name}`);
+          alert(`✅ TRANSMISSION RECEIVED! Thanks, ${name}. I will review your message shortly.`);
+
+          this.reset();
+        });
+      }
+
+      // --- 5. Theme Toggle Functionality ---
+      const themeToggle = document.getElementById('themeToggle');
+      if (themeToggle) {
+        themeToggle.addEventListener('click', function() {
+          document.body.classList.toggle('dark-theme');
+          document.body.classList.toggle('light-theme');
+          
+          // Save theme preference to localStorage
+          const isDarkTheme = document.body.classList.contains('dark-theme');
+          localStorage.setItem('theme', isDarkTheme ? 'dark' : 'light');
+        });
+        
+        // Load saved theme preference
+        const savedTheme = localStorage.getItem('theme') || 'light';
+        if (savedTheme === 'dark') {
+          document.body.classList.add('dark-theme');
+          document.body.classList.remove('light-theme');
+        }
+      }
+
+      // Listen for scroll events to run the progress bar and animations
+      window.addEventListener('scroll', updateProgressBar);
+      
+      // Run on load to set initial state
+      updateProgressBar();
+    });
+  </script>
+</body>
+</html>
