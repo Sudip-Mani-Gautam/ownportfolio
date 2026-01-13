@@ -1,0 +1,1582 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Advanced Arcade</title>
+    <!-- Google Font: Poppins for modern look -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700;900&display=swap" rel="stylesheet">
+    <style>
+        /* Global Theme Variables */
+        :root {
+            /* DARK MODE (Default - Simple & Contrast) */
+            --bg-gradient-start: #1A2027; /* Dark Slate */
+            --bg-gradient-end: #101418;   /* Near Black */
+            --color-text: #E0E0E0;        /* Light Gray */
+            --color-card-bg: rgba(40, 44, 52, 0.9);
+            --color-card-border: rgba(255, 255, 255, 0.15);
+            --color-game-area: #2e2f33;   /* Dark Gray */
+            --color-primary: #FF5722;     /* Deep Orange - Main Accent */
+            --color-secondary: #00ADB5;   /* Cyan/Teal - Secondary Accent */
+            --color-success: #2ecc71;
+            --color-danger: #e74c3c;
+            --color-h1: var(--color-primary);
+            --shadow-light: 0 10px 30px rgba(0,0,0,0.5);
+            --color-canvas-bg: #101418; /* Near Black for game board background */
+        }
+
+        /* LIGHT MODE Variables */
+        .light-mode {
+            --bg-gradient-start: #F8F9FA; /* Off White */
+            --bg-gradient-end: #E9ECEF;   /* Light Gray */
+            --color-text: #343A40;        /* Dark Charcoal */
+            --color-card-bg: rgba(255, 255, 255, 0.95);
+            --color-card-border: rgba(0, 0, 0, 0.1);
+            --color-game-area: #ffffff;   /* White */
+            --color-primary: #FF5722;     /* Deep Orange */
+            --color-secondary: #28A745;   /* Green - Secondary Accent */
+            --color-success: #27ae60;
+            --color-danger: #c0392b;
+            --color-h1: var(--color-primary);
+            --shadow-light: 0 10px 30px rgba(0, 0, 0, 0.1);
+            --color-canvas-bg: #F8F9FA;
+        }
+
+        /* Global Styles */
+        body {
+            font-family: 'Poppins', sans-serif;
+            text-align: center;
+            background: linear-gradient(135deg, var(--bg-gradient-start) 0%, var(--bg-gradient-end) 100%);
+            color: var(--color-text);
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+            transition: background 0.5s, color 0.5s;
+        }
+
+        h1 {
+            margin-bottom: 5px;
+            font-weight: 900;
+            color: var(--color-h1);
+            text-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+            transition: color 0.5s;
+        }
+
+        /* Theme Slider */
+        .theme-switch-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px;
+            background: var(--color-game-area);
+            border-radius: 20px;
+            box-shadow: var(--shadow-light);
+            z-index: 100;
+        }
+
+        /* Game Area */
+        #game-area {
+            margin-top: 30px;
+            background: var(--color-game-area);
+            border-radius: 20px;
+            padding: 30px 20px;
+            display: none;
+            max-width: 90%;
+            margin-left: auto;
+            margin-right: auto;
+            transition: background 0.5s;
+            margin-bottom: 40px; /* Space before cards */
+            box-shadow: var(--shadow-light);
+        }
+
+        /* Game Cards */
+        .game-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 25px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .game-card {
+            background: var(--color-card-bg);
+            backdrop-filter: blur(5px);
+            border: 1px solid var(--color-card-border);
+            padding: 25px;
+            border-radius: 20px;
+            width: 100%;
+            max-width: 250px;
+            box-shadow: var(--shadow-light);
+            transition: 0.3s transform, 0.3s box-shadow, 0.5s background;
+            cursor: pointer;
+            text-align: left;
+        }
+        
+        /* Buttons */
+        button {
+            background: var(--color-primary);
+            border: none;
+            color: white; /* Always white text on primary buttons */
+            padding: 12px 25px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin: 5px;
+            font-weight: 600;
+            transition: 0.2s background, 0.2s transform, 0.5s color;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+            min-width: 120px;
+        }
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.5);
+        }
+        
+        /* Canvas Styling */
+        canvas {
+            border: 5px solid var(--color-primary);
+            border-radius: 10px;
+            margin: 20px auto;
+            display: block;
+            background: var(--color-canvas-bg);
+            box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.5);
+        }
+
+        /* Modal Styling */
+        #modal-overlay {
+            position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0, 0, 0, 0.7);
+            display: none;
+            align-items: center; justify-content: center;
+            z-index: 1000;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        #modal-overlay.active { opacity: 1; }
+        #modal-content {
+            background: var(--color-card-bg);
+            padding: 30px;
+            border-radius: 15px;
+            max-width: 400px;
+            box-shadow: var(--shadow-light);
+            text-align: center;
+            border: 2px solid; /* Defined by JS */
+            transform: scale(0.9);
+            transition: transform 0.3s ease;
+        }
+        #modal-overlay.active #modal-content { transform: scale(1); }
+        #modal-title { margin-top: 0; font-weight: 700; }
+
+        /* Tic Tac Toe Specific */
+        .board {
+            display: grid;
+            grid-template-columns: repeat(3, 100px);
+            grid-gap: 8px;
+            margin: 20px auto;
+            max-width: 316px;
+        }
+        .cell {
+            width: 100px;
+            height: 100px;
+            background: var(--color-card-border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 4em;
+            font-weight: 900;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: 0.1s background;
+        }
+        .cell:hover:not(.occupied) { background: rgba(255, 255, 255, 0.1); }
+        .cell[data-player="X"] { color: var(--color-primary); }
+        .cell[data-player="O"] { color: var(--color-secondary); }
+        .cell.win { background: var(--color-success); color: white !important; }
+        
+        /* Chess Specific CSS */
+        .chess-board-grid {
+            display: grid;
+            grid-template-columns: repeat(8, 1fr);
+            grid-template-rows: repeat(8, 1fr);
+            width: 100%;
+            max-width: 400px; /* Max size for responsiveness */
+            aspect-ratio: 1 / 1;
+            margin: 20px auto;
+            border: 3px solid var(--color-primary);
+            border-radius: 5px;
+        }
+
+        .square {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5em; /* Large pieces */
+            cursor: pointer;
+            user-select: none;
+            transition: background 0.1s, box-shadow 0.1s;
+            /* Use a common serif font that usually supports chess symbols well */
+            font-family: Arial, "Noto Serif", serif; 
+        }
+        /* Classic Board Colors */
+        .light-square { background-color: #f0d9b5; }
+        .dark-square { background-color: #b58863; }
+
+        /* Light mode overrides for Chess */
+        .light-mode .light-square { background-color: #F0F0F0; }
+        .light-mode .dark-square { background-color: #B0B0B0; }
+
+        /* Selection and Move Highlighting */
+        .selected-square {
+            box-shadow: inset 0 0 0 4px var(--color-secondary);
+        }
+        .move-target {
+            background-color: rgba(0, 255, 0, 0.4) !important;
+        }
+        
+        /* Piece colors (White/Black) - Ensure contrast */
+        .piece-white { color: #FFFFFF; text-shadow: -1px -1px 0 #333, 1px -1px 0 #333, -1px 1px 0 #333, 1px 1px 0 #333; }
+        .piece-black { color: #000000; text-shadow: -1px -1px 0 #FFF, 1px -1px 0 #FFF, -1px 1px 0 #FFF, 1px 1px 0 #FFF; }
+
+        /* --- MOBILE RESPONSIVENESS --- */
+        @media (max-width: 768px) {
+            .theme-switch-container { top: 10px; right: 10px; }
+            .game-container { flex-direction: column; align-items: center; }
+            .game-card { max-width: 90%; }
+            .board { grid-template-columns: repeat(3, 80px); grid-gap: 6px; }
+            .cell { width: 80px; height: 80px; font-size: 3em; }
+            #memory-board { grid-template-columns: repeat(4, 1fr); gap: 5px; }
+            .square { font-size: 2em; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Theme Toggle Slider -->
+    <div class="theme-switch-container">
+        ☀️
+        <input type="range" min="0" max="1" value="0" id="theme-slider" class="theme-slider" onchange="toggleTheme(this.value)">
+        🌙
+    </div>
+
+    <h1>🎮 Advanced Arcade</h1>
+    <p>Welcome! Select a game below, or click on a card to start a challenge.</p>
+
+    <!-- Game Area is placed here for prominent display -->
+    <div id="game-area"></div>
+
+    <h3>Choose a game to play:</h3>
+    <div class="game-container">
+        <div class="game-card" onclick="showGame('chess')">
+            <h2>♟️ Chess ♔</h2>
+            <p>Play the classic strategy game against a friend or a challenging AI.</p>
+            <button>Play Now</button>
+        </div>
+        <div class="game-card" onclick="showGame('ticTacToe')">
+            <h2>❌ Tic Tac Toe ⭕</h2>
+            <p>Classic Xs and Os against a friend or the unbeatable AI.</p>
+            <button>Play Now</button>
+        </div>
+        <div class="game-card" onclick="showGame('candyMatch')">
+            <h2>🍎 Fruit Match</h2>
+            <p>A match-3 puzzle game. Swap fruits to clear rows and score!</p>
+            <button>Play Now</button>
+        </div>
+        <div class="game-card" onclick="showGame('pong')">
+            <h2>🏓 Pong</h2>
+            <p>The original arcade classic! Control the paddle to hit the ball.</p>
+            <button>Play Now</button>
+        </div>
+        <div class="game-card" onclick="showGame('memoryMatch')">
+            <h2>🧠 Memory Match</h2>
+            <p>Test your short-term memory by finding all matching pairs.</p>
+            <button>Play Now</button>
+        </div>
+        <div class="game-card" onclick="showGame('wordGuess')">
+            <h2>📝 Guess the Word</h2>
+            <p>Guess the hidden word, letter by letter, before running out of attempts.</p>
+            <button>Play Now</button>
+        </div>
+        <div class="game-card" onclick="showGame('numberGuess')">
+            <h2>🔢 Number Guess</h2>
+            <p>Guess the secret number (1-20) in the fewest attempts.</p>
+            <button>Play Now</button>
+        </div>
+    </div>
+
+    <!-- Pop-up Modal Structure -->
+    <div id="modal-overlay">
+        <div id="modal-content">
+            <h3 id="modal-title"></h3>
+            <p id="modal-message"></p>
+            <button id="modal-close-btn" onclick="closeModal()">Close</button>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/chess.js/0.10.3/chess.min.js"></script>
+    <script>
+        // --- Core Utility Functions & Theme Toggle ---
+
+        // Global variable for the memory match timer (cleared on game switch)
+        let timer; 
+        // Global variables for Chess
+        let chessGame = null;
+        let selectedSquare = null;
+        let isAIGame = false;
+        let aiDepth = 0;
+        let isProcessing = false;
+
+        // Unicode piece representation - KEYS MUST BE single character: p, n, b, r, q, k (black) or P, N, B, R, Q, K (white)
+        const PIECES = {
+            p: '♟', r: '♜', n: '♞', b: '♝', q: '♛', k: '♚', // Black pieces
+            P: '♙', R: '♖', N: '♘', B: '♗', Q: '♕', K: '♔' // White pieces
+        };
+
+        function toggleTheme(value) {
+            const body = document.body;
+            if (value == 1) {
+                body.classList.add('light-mode');
+                localStorage.setItem('arcadeTheme', 'light');
+            } else {
+                body.classList.remove('light-mode');
+                localStorage.setItem('arcadeTheme', 'dark');
+            }
+            // Redraw/Restart games to update canvas colors instantly
+            if (window.pongActive) {
+                cancelAnimationFrame(window.pongAnimation);
+                startPong();
+            }
+            if (window.candyActive) {
+                drawCandyGrid(); // Redraw static candy grid
+            }
+            if (chessGame) {
+                drawChessBoard(); // Redraw chess board colors
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const savedTheme = localStorage.getItem('arcadeTheme') || 'dark';
+            const slider = document.getElementById('theme-slider');
+            if (savedTheme === 'light') {
+                document.body.classList.add('light-mode');
+                slider.value = 1;
+            } else {
+                slider.value = 0;
+            }
+        });
+
+        // Global Modal/Pop-up utility (replacing alert/injected messages)
+        const modalOverlay = document.getElementById("modal-overlay");
+        const modalTitle = document.getElementById("modal-title");
+        const modalMessage = document.getElementById("modal-message");
+
+        function showModal(title, message, type = 'info') {
+            modalTitle.textContent = title;
+            modalMessage.textContent = message;
+            
+            const rootStyle = getComputedStyle(document.documentElement);
+            let color;
+            if (type === 'success') {
+                color = rootStyle.getPropertyValue('--color-success').trim();
+            } else if (type === 'danger') {
+                color = rootStyle.getPropertyValue('--color-danger').trim();
+            } else {
+                color = rootStyle.getPropertyValue('--color-primary').trim();
+            }
+
+            document.getElementById("modal-content").style.border = `2px solid ${color}`;
+            modalTitle.style.color = color;
+
+            modalOverlay.style.display = "flex";
+            setTimeout(() => modalOverlay.classList.add('active'), 10);
+        }
+        
+        function closeModal() {
+            modalOverlay.classList.remove('active');
+            setTimeout(() => modalOverlay.style.display = "none", 300);
+        }
+
+        /**
+         * Stops active intervals and animations for all running games.
+         * This prevents errors when the DOM elements are removed.
+         */
+        function stopAllGames() {
+            if (window.pongActive) {
+                cancelAnimationFrame(window.pongAnimation);
+                window.pongActive = false;
+            }
+            if (window.candyActive) {
+                cancelAnimationFrame(window.candyAnimation);
+                window.candyActive = false;
+                const candyCanvas = document.getElementById('candyCanvas');
+                if (candyCanvas) candyCanvas.onclick = null;
+            }
+            clearInterval(timer); // Stop Memory Match timer
+            isProcessing = false; // Stop AI processing for Chess
+        }
+
+        function showGame(game) {
+            stopAllGames();
+            
+            const area = document.getElementById("game-area");
+            area.style.display = "block";
+            area.innerHTML = ''; // Clear previous game
+
+            // Set max width for the game area
+            area.style.maxWidth = game === 'chess' ? '450px' : '600px'; 
+            
+            if (game === "chess") {
+                area.innerHTML = `
+                    <h2>♟️ Chess ♔</h2>
+                    <div id="chess-mode-selection">
+                        <button onclick="startChess(0)">🧑 Vs 🧑 (Local)</button>
+                        <div style="margin-top: 10px;">
+                            <label for="ai-elo" style="color: var(--color-text);">Select AI Level (Elo):</label>
+                            <select id="ai-elo" style="padding: 8px; border-radius: 4px; background: var(--color-game-area); color: var(--color-text); border: 1px solid var(--color-card-border);">
+                                <option value="1">555 (Beginner)</option>
+                                <option value="2">777 (Intermediate)</option>
+                                <option value="3">999 (Advanced)</option>
+                                <option value="4">1600 (Grandmaster)</option>
+                            </select>
+                            <button onclick="startChess(parseInt(document.getElementById('ai-elo').value))">🧑 Vs 🤖 (Start)</button>
+                        </div>
+                    </div>
+                    <div id="chess-game" style="display: none;">
+                        <div id="chess-board" class="chess-board-grid"></div>
+                        <p id="chess-status" style="font-weight: 700; margin-top: 15px;"></p>
+                        <p id="chess-message" style="margin-top: 5px; font-size: 0.9em;"></p>
+                        <div style="margin-top: 15px;">
+                            <button onclick="undoMove()">Undo</button>
+                            <button onclick="initChess()">Restart Game</button>
+                        </div>
+                    </div>
+                `;
+                initChess();
+            } else if (game === "ticTacToe") {
+                area.innerHTML = `
+                    <h2>❌ Tic Tac Toe ⭕</h2>
+                    <div id="tictactoe-mode-selection">
+                        <button onclick="startTicTacToe(false)">🧑 Vs 🧑 (Local)</button>
+                        <button onclick="startTicTacToe(true)">🧑 Vs 🤖 (AI)</button>
+                    </div>
+                    <div id="tictactoe-game" style="display: none;">
+                        <p id="status" style="font-weight: 700;"></p>
+                        <div id="board" class="board"></div>
+                        <button onclick="resetTicTacToe()">Reset Game</button>
+                    </div>
+                `;
+                document.getElementById("tictactoe-game").style.display = 'block'; // Always show board area
+                startTicTacToe(false); // Start with local two-player game by default
+            } else if (game === "pong") {
+                area.innerHTML = `
+                    <h2>🏓 Pong</h2>
+                    <p id="pong-score" style="font-weight: 700;">Player: 0 | CPU: 0</p>
+                    <canvas id="pongCanvas" width="500" height="300" style="width: 100%; max-width: 500px; height: auto;"></canvas>
+                    <div style="margin-top: 15px;">
+                        <button onclick="startPong()">Restart Game</button>
+                    </div>
+                    <p style="font-size: 0.9em;">Controls: Use the Up and Down arrow keys to move your paddle.</p>
+                `;
+                canvas = document.getElementById("pongCanvas");
+                canvas.width = 500; canvas.height = 300; // Reset dimensions
+                startPong();
+            } else if (game === "candyMatch") {
+                area.innerHTML = `
+                    <h2>🍎 Fruit Match</h2>
+                    <p id="match-status" style="font-weight: 700;"></p>
+                    <canvas id="candyCanvas" width="300" height="300" style="width: 100%; max-width: 300px; height: auto;"></canvas>
+                    <div style="margin-top: 15px;">
+                        <button onclick="initCandyMatch()">New Game</button>
+                    </div>
+                    <p style="font-size: 0.9em;">Goal: Swap adjacent fruits to make a row or column of 3 or more.</p>
+                `;
+                initCandyMatch();
+            } else if (game === "memoryMatch") {
+                area.innerHTML = `
+                    <h2>🧠 Memory Match</h2>
+                    <p id="memory-status" style="font-weight: 700;"></p>
+                    <div id="memory-board"></div>
+                    <div style="margin-top: 15px;">
+                        <button onclick="initMemoryMatch()">New Game</button>
+                    </div>
+                `;
+                initMemoryMatch();
+            } else if (game === "wordGuess") {
+                area.innerHTML = `
+                    <h2>📝 Guess the Word</h2>
+                    <p>Attempts Left: <span id="word-attempts" style="font-weight: 700;">6</span></p>
+                    <p id="word-display" style="font-size: 2em; letter-spacing: 10px; margin: 20px 0; font-weight: 900;"></p>
+                    <p id="guessed-letters" style="font-size: 0.9em;"></p>
+                    <div style="margin: 20px 0;">
+                        <input type="text" id="letter-input" maxlength="1" placeholder="Enter a letter" style="padding: 10px; width: 150px; border-radius: 8px; border: 1px solid var(--color-card-border); background: var(--color-card-bg); color: var(--color-text);">
+                        <button onclick="guessLetter()">Guess</button>
+                    </div>
+                    <div style="margin-top: 15px;">
+                        <button onclick="initWordGuess()">New Game</button>
+                    </div>
+                `;
+                initWordGuess();
+            } else if (game === "numberGuess") {
+                area.innerHTML = `
+                    <h2>🔢 Number Guess</h2>
+                    <p>Guess a number between 1 and 20.</p>
+                    <p id="number-result" style="font-weight: 700; margin-bottom: 20px;"></p>
+                    <div style="margin: 20px 0;">
+                        <input type="number" id="guess-input" min="1" max="20" placeholder="Your Guess" style="padding: 10px; width: 150px; border-radius: 8px; border: 1px solid var(--color-card-border); background: var(--color-card-bg); color: var(--color-text);">
+                        <button id="guess-button" onclick="checkGuess()">Check</button>
+                    </div>
+                    <div style="margin-top: 15px;">
+                        <button onclick="initNumberGuess()">New Game</button>
+                    </div>
+                `;
+                initNumberGuess();
+            }
+        }
+
+
+        /* ======================== GAME: CHESS ======================== */
+        
+        function initChess() {
+            if (typeof Chess === 'undefined') {
+                showModal("Error", "Chess game library is not loaded. Cannot start game.", 'danger');
+                return;
+            }
+            document.getElementById("chess-mode-selection").style.display = 'block';
+            document.getElementById("chess-game").style.display = 'none';
+        }
+
+        function startChess(depth) {
+            chessGame = new Chess();
+            selectedSquare = null;
+            isAIGame = depth > 0;
+            aiDepth = depth;
+            isProcessing = false;
+
+            document.getElementById("chess-mode-selection").style.display = 'none';
+            document.getElementById("chess-game").style.display = 'block';
+
+            drawChessBoard();
+            updateChessStatus();
+        }
+
+        function drawChessBoard() {
+            if (!chessGame) return;
+
+            const boardEl = document.getElementById('chess-board');
+            if (!boardEl) return;
+            boardEl.innerHTML = '';
+            
+            const board = chessGame.board();
+            for (let r = 0; r < 8; r++) {
+                for (let c = 0; c < 8; c++) {
+                    const squareColor = (r + c) % 2 === 0 ? 'light-square' : 'dark-square';
+                    const squareId = String.fromCharCode('a'.charCodeAt(0) + c) + (8 - r);
+                    const piece = board[r][c];
+                    
+                    const squareDiv = document.createElement('div');
+                    squareDiv.classList.add('square', squareColor);
+                    squareDiv.dataset.square = squareId;
+                    squareDiv.onclick = () => handleSquareClick(squareId);
+
+                    if (piece) {
+                        // FIX: Correctly determine the piece key (P/R/K for white, p/r/k for black)
+                        const pieceKey = piece.color === 'w' ? piece.type.toUpperCase() : piece.type;
+                        
+                        squareDiv.textContent = PIECES[pieceKey];
+                        squareDiv.classList.add(piece.color === 'w' ? 'piece-white' : 'piece-black');
+                    }
+                    boardEl.appendChild(squareDiv);
+                }
+            }
+            highlightSelectedSquare();
+        }
+
+        function highlightSelectedSquare() {
+            document.querySelectorAll('.square').forEach(sq => {
+                sq.classList.remove('selected-square', 'move-target');
+            });
+
+            if (selectedSquare) {
+                const sqEl = document.querySelector(`[data-square="${selectedSquare}"]`);
+                if (sqEl) sqEl.classList.add('selected-square');
+
+                // Highlight possible moves
+                const moves = chessGame.moves({ square: selectedSquare, verbose: true });
+                moves.forEach(move => {
+                    document.querySelector(`[data-square="${move.to}"]`).classList.add('move-target');
+                });
+            }
+        }
+
+        function updateChessStatus(message = "") {
+            if (!chessGame) return;
+
+            const statusEl = document.getElementById('chess-status');
+            const messageEl = document.getElementById('chess-message');
+            const turn = chessGame.turn() === 'w' ? 'White' : 'Black';
+
+            if (chessGame.in_checkmate()) {
+                statusEl.textContent = `Game Over: ${turn} is Checkmated!`;
+                messageEl.textContent = `${turn === 'White' ? 'Black' : 'White'} Wins! 🎉`;
+                showModal("Checkmate", `${turn === 'White' ? 'Black' : 'White'} Wins!`, 'success');
+            } else if (chessGame.in_draw()) {
+                statusEl.textContent = "Game Over: Draw!";
+                messageEl.textContent = "It's a Draw! 🤝";
+                showModal("Draw", "The game is a Draw!", 'info');
+            } else if (chessGame.in_check()) {
+                statusEl.textContent = `${turn}'s Turn (In Check!)`;
+                messageEl.textContent = "Check! ⚠️";
+            } else {
+                statusEl.textContent = `${turn}'s Turn`;
+                messageEl.textContent = message;
+            }
+        }
+
+        function handleSquareClick(square) {
+            if (!chessGame || chessGame.game_over() || isProcessing) return;
+
+            if (selectedSquare) {
+                // Second click: attempt to move
+                const move = chessGame.move({ from: selectedSquare, to: square, promotion: 'q' }); // Always promote to Queen for simplicity
+                
+                if (move) {
+                    selectedSquare = null;
+                    drawChessBoard();
+                    updateChessStatus();
+                    
+                    if (isAIGame && !chessGame.game_over()) {
+                        isProcessing = true;
+                        setTimeout(aiMove, 500); // Small delay for effect
+                    }
+                } else {
+                    // Invalid move, try selecting a new piece
+                    selectedSquare = null;
+                    handleSquareClick(square);
+                }
+            } else {
+                // First click: select piece
+                const piece = chessGame.get(square);
+                // Only allow selection if it's the current player's piece
+                if (piece && piece.color === chessGame.turn()) {
+                    // In AI mode, only allow white (human) to move
+                    if (!isAIGame || (isAIGame && chessGame.turn() === 'w')) {
+                        selectedSquare = square;
+                        highlightSelectedSquare();
+                    }
+                }
+            }
+        }
+
+        function undoMove() {
+            if (isProcessing) return;
+            chessGame.undo();
+            if (isAIGame && chessGame.turn() === 'b') {
+                // If AI just moved, undo its move too
+                chessGame.undo();
+            }
+            selectedSquare = null;
+            drawChessBoard();
+            updateChessStatus("Move undone.");
+            isProcessing = false;
+        }
+
+        /* --- CHESS AI (MINIMAX IMPLEMENTATION) --- */
+
+        const PIECE_VALUES = { 'p': 1, 'n': 3, 'b': 3, 'r': 5, 'q': 9, 'k': 0 };
+
+        /**
+         * Simple board evaluation function (material balance).
+         * Positive score favors White, negative favors Black.
+         */
+        function evaluateBoard(board) {
+            let score = 0;
+            for (let r = 0; r < 8; r++) {
+                for (let c = 0; c < 8; c++) {
+                    const piece = board[r][c];
+                    if (piece) {
+                        const value = PIECE_VALUES[piece.type.toLowerCase()];
+                        score += (piece.color === 'w' ? value : -value);
+                    }
+                }
+            }
+            return score;
+        }
+
+        /**
+         * Minimax algorithm to find the best move.
+         * @param {Chess} game - The chess.js instance.
+         * @param {number} depth - The search depth.
+         * @param {boolean} isMaximizingPlayer - True for 'b' (AI), false for 'w' (Human).
+         */
+        function minimax(game, depth, isMaximizingPlayer) {
+            if (depth === 0 || game.game_over()) {
+                return { score: evaluateBoard(game.board()) };
+            }
+
+            const moves = game.moves({ verbose: true });
+            let bestMove = null;
+            let bestScore = isMaximizingPlayer ? -Infinity : Infinity;
+
+            for (const move of moves) {
+                game.move(move);
+                const result = minimax(game, depth - 1, !isMaximizingPlayer);
+                game.undo(); // Undo move
+
+                if (isMaximizingPlayer) {
+                    if (result.score > bestScore) {
+                        bestScore = result.score;
+                        bestMove = move;
+                    }
+                } else {
+                    if (result.score < bestScore) {
+                        bestScore = result.score;
+                        bestMove = move;
+                    }
+                }
+            }
+            return { score: bestScore, move: bestMove };
+        }
+
+        function aiMove() {
+            updateChessStatus("AI is thinking...");
+            document.getElementById('chess-board').style.pointerEvents = 'none'; // Disable clicks
+
+            // Use the predetermined depth
+            const searchDepth = aiDepth; 
+            
+            // To prevent blocking the UI, run the minimax search in a separate step
+            // Note: Since we can't use Web Workers in this single-file setup, we rely on a small depth.
+            
+            const result = minimax(chessGame, searchDepth, chessGame.turn() === 'b');
+            
+            if (result.move) {
+                chessGame.move(result.move);
+                drawChessBoard();
+                updateChessStatus("AI played: " + result.move.san);
+            } else {
+                updateChessStatus("AI failed to find a move (stuck).");
+            }
+            
+            document.getElementById('chess-board').style.pointerEvents = 'auto'; // Enable clicks
+            isProcessing = false;
+        }
+
+
+        /* ======================== GAME: CANDY MATCH (SIMPLIFIED MATCH-3) ======================== */
+        const MATCH_GRID_SIZE = 5;
+        const FRUIT_EMOJIS = ["🍎", "🍌", "🍇", "🍓", "🍍", "🥝", "🍒", "🥕"];
+        const CANDY_TYPES = FRUIT_EMOJIS.slice(0, 5); // Use 5 types for the 5x5 grid
+
+        let candyGrid = [];
+        let score = 0;
+        let moves = 0;
+        let selectedCandy = null; // {row, col, value}
+        let candyCanvas, candyCtx;
+        let CELL_SIZE = 60; // Default for 300x300 canvas
+        window.candyActive = false;
+        window.isSwapping = false;
+        window.candyAnimation = null;
+
+        function initCandyMatch() {
+            score = 0;
+            moves = 0;
+            selectedCandy = null;
+            candyGrid = [];
+            
+            candyCanvas = document.getElementById("candyCanvas");
+            if (!candyCanvas) return;
+            candyCtx = candyCanvas.getContext("2d");
+            CELL_SIZE = candyCanvas.width / MATCH_GRID_SIZE;
+
+            window.candyActive = true;
+            candyCanvas.onclick = handleCandyClick;
+
+            do {
+                generateGrid();
+            } while (findMatches(candyGrid).length > 0);
+            
+            drawCandyGrid();
+            updateMatchStatus();
+        }
+
+        function generateGrid() {
+            candyGrid = [];
+            for (let r = 0; r < MATCH_GRID_SIZE; r++) {
+                candyGrid[r] = [];
+                for (let c = 0; c < MATCH_GRID_SIZE; c++) {
+                    const type = CANDY_TYPES[Math.floor(Math.random() * CANDY_TYPES.length)];
+                    candyGrid[r][c] = type;
+                }
+            }
+        }
+
+        function updateMatchStatus() {
+            const statusEl = document.getElementById("match-status");
+            if(statusEl) statusEl.textContent = `Score: ${score} | Moves: ${moves}`;
+        }
+        
+        function drawCandy(ctx, x, y, size, type) {
+            ctx.font = `${size * 0.7}px Arial`;
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText(type, x, y);
+        }
+
+        function drawCandyGrid(animatedCandies = []) {
+            if (!candyCtx) return;
+            const rootStyle = getComputedStyle(document.documentElement);
+            const canvasBg = rootStyle.getPropertyValue('--color-canvas-bg').trim();
+
+            candyCtx.fillStyle = canvasBg;
+            candyCtx.fillRect(0, 0, candyCanvas.width, candyCanvas.height);
+            
+            candyCtx.strokeStyle = 'rgba(255, 255, 255, 0.05)'; 
+            candyCtx.lineWidth = 1;
+            for (let i = 0; i <= MATCH_GRID_SIZE; i++) {
+                candyCtx.beginPath();
+                candyCtx.moveTo(i * CELL_SIZE, 0);
+                candyCtx.lineTo(i * CELL_SIZE, candyCanvas.height);
+                candyCtx.stroke();
+                
+                candyCtx.beginPath();
+                candyCtx.moveTo(0, i * CELL_SIZE);
+                candyCtx.lineTo(candyCanvas.width, i * CELL_SIZE);
+                candyCtx.stroke();
+            }
+
+            for (let r = 0; r < MATCH_GRID_SIZE; r++) {
+                for (let c = 0; c < MATCH_GRID_SIZE; c++) {
+                    const type = candyGrid[r][c];
+                    if (type === " ") continue;
+
+                    const x = c * CELL_SIZE + CELL_SIZE / 2;
+                    const y = r * CELL_SIZE + CELL_SIZE / 2;
+                    
+                    const isAnimated = animatedCandies.some(ac => ac.r === r && ac.c === c);
+                    if (isAnimated) continue;
+
+                    drawCandy(candyCtx, x, y, CELL_SIZE, type);
+
+                    if (selectedCandy && selectedCandy.row === r && selectedCandy.col === c) {
+                        candyCtx.strokeStyle = rootStyle.getPropertyValue('--color-secondary').trim();
+                        candyCtx.lineWidth = 3;
+                        candyCtx.strokeRect(c * CELL_SIZE + 2, r * CELL_SIZE + 2, CELL_SIZE - 4, CELL_SIZE - 4);
+                    }
+                }
+            }
+            
+            animatedCandies.forEach(ac => {
+                drawCandy(candyCtx, ac.x, ac.y, CELL_SIZE, ac.type);
+            });
+        }
+
+        function handleCandyClick(event) {
+            if (window.isSwapping) return;
+
+            const rect = candyCanvas.getBoundingClientRect();
+            const x = event.clientX - rect.left;
+            const y = event.clientY - rect.top;
+
+            const col = Math.floor(x / CELL_SIZE);
+            const row = Math.floor(y / CELL_SIZE);
+
+            if (selectedCandy) {
+                if (Math.abs(selectedCandy.row - row) + Math.abs(selectedCandy.col - col) === 1) {
+                    attemptSwap(selectedCandy.row, selectedCandy.col, row, col);
+                }
+                selectedCandy = null;
+            } else {
+                selectedCandy = { row, col, value: candyGrid[row][col] };
+            }
+
+            drawCandyGrid();
+        }
+
+        function attemptSwap(r1, c1, r2, c2) {
+            window.isSwapping = true;
+            
+            smoothSwap(r1, c1, r2, c2)
+            .then(() => {
+                [candyGrid[r1][c1], candyGrid[r2][c2]] = [candyGrid[r2][c2], candyGrid[r1][c1]];
+                
+                const matches = findMatches(candyGrid);
+                window.isSwapping = false;
+                
+                if (matches.length > 0) {
+                    moves++;
+                    processMatches(matches);
+                } else {
+                    showModal("No Match", "That swap didn't create a match of 3 or more! Swapping back.", 'info');
+                    window.isSwapping = true;
+                    smoothSwap(r2, c2, r1, c1, true)
+                    .then(() => {
+                        [candyGrid[r1][c1], candyGrid[r2][c2]] = [candyGrid[r2][c2], candyGrid[r1][c1]];
+                        drawCandyGrid();
+                        window.isSwapping = false;
+                    });
+                }
+            });
+        }
+        
+        function smoothSwap(r1, c1, r2, c2) {
+            return new Promise(resolve => {
+                const DURATION = 200;
+                const start = performance.now();
+                
+                const type1 = candyGrid[r1][c1];
+                const type2 = candyGrid[r2][c2];
+                
+                const startX1 = c1 * CELL_SIZE + CELL_SIZE / 2;
+                const startY1 = r1 * CELL_SIZE + CELL_SIZE / 2;
+                const endX1 = c2 * CELL_SIZE + CELL_SIZE / 2;
+                const endY1 = r2 * CELL_SIZE + CELL_SIZE / 2;
+
+                const startX2 = c2 * CELL_SIZE + CELL_SIZE / 2;
+                const startY2 = r2 * CELL_SIZE + CELL_SIZE / 2;
+                const endX2 = c1 * CELL_SIZE + CELL_SIZE / 2;
+                const endY2 = c2 * CELL_SIZE + CELL_SIZE / 2; // Fixed Y coordinate for the return path
+                
+                candyGrid[r1][c1] = " ";
+                candyGrid[r2][c2] = " ";
+
+                const animate = (time) => {
+                    const elapsed = time - start;
+                    const progress = Math.min(1, elapsed / DURATION);
+                    
+                    const x1 = startX1 + (endX1 - startX1) * progress;
+                    const y1 = startY1 + (endY1 - startY1) * progress;
+                    
+                    const x2 = startX2 + (endX2 - startX2) * progress;
+                    const y2 = startY2 + (endY2 - startY2) * progress;
+                    
+                    const animatedCandies = [
+                        { r: r1, c: c1, type: type1, x: x1, y: y1 },
+                        { r: r2, c: c2, type: type2, x: x2, y: y2 }
+                    ];
+
+                    drawCandyGrid(animatedCandies);
+
+                    if (progress < 1) {
+                        window.candyAnimation = requestAnimationFrame(animate);
+                    } else {
+                        cancelAnimationFrame(window.candyAnimation);
+                        candyGrid[r1][c1] = type1;
+                        candyGrid[r2][c2] = type2;
+                        resolve();
+                    }
+                };
+                window.candyAnimation = requestAnimationFrame(animate);
+            });
+        }
+
+        function findMatches(grid) {
+            const matches = [];
+
+            // Check horizontal matches
+            for (let r = 0; r < MATCH_GRID_SIZE; r++) {
+                for (let c = 0; c < MATCH_GRID_SIZE - 2; c++) {
+                    const current = grid[r][c];
+                    if (current !== " " && current === grid[r][c+1] && current === grid[r][c+2]) {
+                        matches.push({r, c}, {r, c: c + 1}, {r, c: c + 2});
+                        c += 2; 
+                    }
+                }
+            }
+            
+            // Check vertical matches
+            for (let c = 0; c < MATCH_GRID_SIZE; c++) {
+                for (let r = 0; r < MATCH_GRID_SIZE - 2; r++) {
+                    const current = grid[r][c];
+                    if (current !== " " && current === grid[r+1][c] && current === grid[r+2][c]) {
+                        matches.push({r, c}, {r: r + 1, c}, {r: r + 2, c});
+                        r += 2;
+                    }
+                }
+            }
+
+            const uniqueMatches = Array.from(new Set(matches.map(m => `${m.r},${m.c}`)))
+                                    .map(s => {
+                                        const [r, c] = s.split(',').map(Number);
+                                        return {r, c};
+                                    });
+            return uniqueMatches;
+        }
+
+        function processMatches(matches) {
+            if (matches.length === 0) {
+                drawCandyGrid();
+                return;
+            }
+            
+            window.isSwapping = true;
+            const numMatches = matches.length;
+            score += numMatches * 10;
+            updateMatchStatus();
+            
+            matches.forEach(({r, c}) => {
+                candyGrid[r][c] = " ";
+            });
+            drawCandyGrid();
+
+            setTimeout(() => {
+                applyGravity();
+                drawCandyGrid();
+                
+                setTimeout(() => {
+                    refillGrid();
+                    drawCandyGrid();
+
+                    const cascadeMatches = findMatches(candyGrid);
+                    if (cascadeMatches.length > 0) {
+                        processMatches(cascadeMatches); 
+                    } else {
+                        window.isSwapping = false;
+                    }
+                }, 200);
+            }, 200);
+        }
+
+        function applyGravity() {
+            for (let c = 0; c < MATCH_GRID_SIZE; c++) {
+                let emptyRow = MATCH_GRID_SIZE - 1; 
+                for (let r = MATCH_GRID_SIZE - 1; r >= 0; r--) {
+                    if (candyGrid[r][c] !== " ") {
+                        if (r !== emptyRow) {
+                            candyGrid[emptyRow][c] = candyGrid[r][c];
+                            candyGrid[r][c] = " ";
+                        }
+                        emptyRow--;
+                    }
+                }
+            }
+        }
+
+        function refillGrid() {
+            for (let c = 0; c < MATCH_GRID_SIZE; c++) {
+                for (let r = 0; r < MATCH_GRID_SIZE; r++) {
+                    if (candyGrid[r][c] === " ") {
+                        candyGrid[r][c] = CANDY_TYPES[Math.floor(Math.random() * CANDY_TYPES.length)];
+                    }
+                }
+            }
+        }
+
+
+        /* ======================== GAME: PONG (Rest of the game code remains the same) ======================== */
+        let canvas, ctx;
+        let p1Score, cpuScore;
+        let p1Y, cpuY, paddleH, paddleW;
+        let ballX, ballY, ballSpeedX, ballSpeedY, ballSize;
+        let upPressed, downPressed;
+
+        function startPong() {
+            canvas = document.getElementById("pongCanvas");
+            if (!canvas) return;
+            ctx = canvas.getContext("2d");
+            
+            p1Score = 0;
+            cpuScore = 0;
+            paddleW = 10;
+            paddleH = 60;
+            p1Y = canvas.height / 2 - paddleH / 2;
+            cpuY = canvas.height / 2 - paddleH / 2;
+            ballSize = 8;
+            resetBall();
+
+            upPressed = false;
+            downPressed = false;
+
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'ArrowUp') upPressed = true;
+                if (e.key === 'ArrowDown') downPressed = true;
+            });
+            document.addEventListener('keyup', (e) => {
+                if (e.key === 'ArrowUp') upPressed = false;
+                if (e.key === 'ArrowDown') downPressed = false;
+            });
+
+            if(window.pongActive) cancelAnimationFrame(window.pongAnimation);
+            window.pongActive = true;
+            gameLoopPong();
+        }
+
+        function resetBall() {
+            ballX = canvas.width / 2;
+            ballY = canvas.height / 2;
+            ballSpeedX = (Math.random() > 0.5 ? 5 : -5);
+            ballSpeedY = Math.random() * 4 - 2; 
+        }
+
+        function cpuMovement() {
+            const cpuCenter = cpuY + paddleH / 2;
+            if (cpuCenter < ballY - 15) {
+                cpuY += 4;
+            } else if (cpuCenter > ballY + 15) {
+                cpuY -= 4;
+            }
+            cpuY = Math.max(0, Math.min(canvas.height - paddleH, cpuY));
+        }
+
+        function moveEverything() {
+            cpuMovement();
+
+            if (upPressed) p1Y -= 6;
+            if (downPressed) p1Y += 6;
+            p1Y = Math.max(0, Math.min(canvas.height - paddleH, p1Y));
+
+            ballX += ballSpeedX;
+            ballY += ballSpeedY;
+
+            if (ballY < 0 || ballY > canvas.height - ballSize) {
+                ballSpeedY = -ballSpeedY;
+            }
+
+            // Ball hitting right wall (CPU side)
+            if (ballX > canvas.width - paddleW) {
+                if (ballY > cpuY && ballY < cpuY + paddleH) {
+                    ballSpeedX = -ballSpeedX;
+                    let deltaY = ballY - (cpuY + paddleH / 2);
+                    ballSpeedY = deltaY * 0.2;
+                } else {
+                    p1Score++;
+                    updatePongScore();
+                    resetBall();
+                }
+            }
+
+            // Ball hitting left wall (Player side)
+            if (ballX < paddleW) {
+                if (ballY > p1Y && ballY < p1Y + paddleH) {
+                    ballSpeedX = -ballSpeedX;
+                    let deltaY = ballY - (p1Y + paddleH / 2);
+                    ballSpeedY = deltaY * 0.2;
+                } else {
+                    cpuScore++;
+                    updatePongScore();
+                    resetBall();
+                }
+            }
+        }
+
+        function updatePongScore() {
+            document.getElementById('pong-score').textContent = `Player: ${p1Score} | CPU: ${cpuScore}`;
+            if (p1Score >= 5) {
+                showModal("Game Over", "You Win the Pong Match! 🎉", 'success');
+                cancelAnimationFrame(window.pongAnimation);
+                window.pongActive = false;
+            } else if (cpuScore >= 5) {
+                showModal("Game Over", "CPU Wins! Better luck next time. 😞", 'danger');
+                cancelAnimationFrame(window.pongAnimation);
+                window.pongActive = false;
+            }
+        }
+
+        function drawEverything() {
+            const rootStyle = getComputedStyle(document.documentElement);
+            const canvasBg = rootStyle.getPropertyValue('--color-canvas-bg').trim();
+            const primaryColor = rootStyle.getPropertyValue('--color-primary').trim();
+            const textColor = rootStyle.getPropertyValue('--color-text').trim();
+
+            // Background
+            ctx.fillStyle = canvasBg;
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            // Paddles
+            ctx.fillStyle = primaryColor;
+            ctx.fillRect(0, p1Y, paddleW, paddleH);
+            ctx.fillRect(canvas.width - paddleW, cpuY, paddleW, paddleH);
+
+            // Center Line (Dashed)
+            ctx.strokeStyle = primaryColor;
+            ctx.lineWidth = 2;
+            ctx.setLineDash([10, 10]);
+            ctx.beginPath();
+            ctx.moveTo(canvas.width / 2, 0);
+            ctx.lineTo(canvas.width / 2, canvas.height);
+            ctx.stroke();
+            ctx.setLineDash([]);
+
+            // Ball
+            ctx.fillStyle = textColor;
+            ctx.beginPath();
+            ctx.arc(ballX, ballY, ballSize, 0, Math.PI * 2, true);
+            ctx.fill();
+        }
+
+        function gameLoopPong() {
+            if (!window.pongActive) return;
+            moveEverything();
+            drawEverything();
+            window.pongAnimation = requestAnimationFrame(gameLoopPong);
+        }
+
+        /* ======================== GAME: TIC TAC TOE (Rest of the game code remains the same) ======================== */
+        let currentPlayer, boardState, gameActive, isAIPlaying;
+        const HUMAN_PLAYER = "X";
+        const AI_PLAYER = "O";
+        const WINNING_COMBOS = [
+            [0,1,2],[3,4,5],[6,7,8],
+            [0,3,6],[1,4,7],[2,5,8],
+            [0,4,8],[2,4,6]
+        ];
+        const AI_DELAY_MS = 500;
+
+        function startTicTacToe(aiMode) {
+            document.getElementById("tictactoe-mode-selection").style.display = 'none';
+            document.getElementById("tictactoe-game").style.display = 'block';
+
+            const board = document.getElementById("board");
+            board.innerHTML = "";
+            boardState = Array(9).fill("");
+            gameActive = true;
+            currentPlayer = HUMAN_PLAYER;
+            isAIPlaying = aiMode;
+            document.getElementById("status").textContent = `Player ${HUMAN_PLAYER}'s turn`;
+
+            for (let i = 0; i < 9; i++) {
+                const cell = document.createElement("div");
+                cell.classList.add("cell");
+                cell.dataset.index = i;
+                cell.addEventListener("click", handleCellClick);
+                board.appendChild(cell);
+            }
+            if (isAIPlaying && currentPlayer === AI_PLAYER) {
+                 setTimeout(aiMoveTTT, AI_DELAY_MS);
+            }
+        }
+        
+        function resetTicTacToe() { startTicTacToe(isAIPlaying); }
+
+        function handleCellClick(e) {
+            const index = parseInt(e.target.dataset.index);
+            if (!gameActive || boardState[index] !== "" || (isAIPlaying && currentPlayer === AI_PLAYER)) return;
+            makeMove(index, currentPlayer);
+            if (!gameActive) return;
+            currentPlayer = currentPlayer === HUMAN_PLAYER ? AI_PLAYER : HUMAN_PLAYER;
+            document.getElementById("status").textContent = `Player ${currentPlayer}'s turn`;
+
+            if (isAIPlaying && currentPlayer === AI_PLAYER) {
+                document.getElementById("status").textContent = "AI is thinking...";
+                gameActive = false; 
+                setTimeout(aiMoveTTT, AI_DELAY_MS);
+            }
+        }
+
+        function makeMove(index, player) {
+            const cell = document.querySelector(`.cell[data-index="${index}"]`);
+            boardState[index] = player;
+            cell.textContent = player;
+            cell.dataset.player = player;
+            cell.classList.add('occupied');
+
+            const result = checkGameStatus();
+            if (result.winner) {
+                showModal("Game Over", `Player ${player} Wins! 🎉`, 'success');
+                document.getElementById("status").textContent = `Player ${player} Wins! 🎉`;
+                gameActive = false;
+                result.combo.forEach(idx => {
+                    document.querySelector(`.cell[data-index="${idx}"]`).classList.add('win');
+                });
+            } else if (result.draw) {
+                showModal("Game Over", "It's a Draw! 🤝", 'info');
+                document.getElementById("status").textContent = "It's a Draw! 🤝";
+                gameActive = false;
+            }
+        }
+        
+        function checkGameStatus(board = boardState) {
+            for (const combo of WINNING_COMBOS) {
+                const [a, b, c] = combo;
+                if (board[a] && board[a] === board[b] && board[a] === board[c]) {
+                    return { winner: board[a], combo: combo };
+                }
+            }
+            if (board.every(cell => cell !== "")) {
+                return { draw: true };
+            }
+            return {};
+        }
+
+        function getEmptySpots(board) { return board.map((cell, index) => cell === "" ? index : null).filter(val => val !== null); }
+
+        function minimaxTTT(newBoard, player) {
+            const emptySpots = getEmptySpots(newBoard);
+            const status = checkGameStatus(newBoard);
+            if (status.winner === HUMAN_PLAYER) return { score: -10 };
+            if (status.winner === AI_PLAYER) return { score: 10 };
+            if (emptySpots.length === 0) return { score: 0 };
+
+            const moves = [];
+            for (let i = 0; i < emptySpots.length; i++) {
+                const move = {};
+                move.index = emptySpots[i];
+                newBoard[emptySpots[i]] = player;
+                const result = (player === AI_PLAYER) ? minimaxTTT(newBoard, HUMAN_PLAYER) : minimaxTTT(newBoard, AI_PLAYER);
+                move.score = result.score;
+                newBoard[emptySpots[i]] = "";
+                moves.push(move);
+            }
+
+            let bestMove;
+            let bestScore = player === AI_PLAYER ? -Infinity : Infinity;
+            for (let i = 0; i < moves.length; i++) {
+                if (player === AI_PLAYER) {
+                    if (moves[i].score > bestScore) { bestScore = moves[i].score; bestMove = i; }
+                } else {
+                    if (moves[i].score < bestScore) { bestScore = moves[i].score; bestMove = i; }
+                }
+            }
+            return moves[bestMove];
+        }
+
+        function aiMoveTTT() {
+            const bestMoveIndex = minimaxTTT(boardState, AI_PLAYER).index;
+            gameActive = true; 
+            if (bestMoveIndex !== undefined) {
+                makeMove(bestMoveIndex, AI_PLAYER);
+            }
+            if (gameActive) {
+                currentPlayer = HUMAN_PLAYER;
+                document.getElementById("status").textContent = `Player ${HUMAN_PLAYER}'s turn`;
+            }
+        }
+        
+        /* ======================== GAME: MEMORY MATCH (Icons updated) ======================== */
+        let cards = [];
+        let flippedCards = [];
+        let matchedPairs = 0;
+        let totalClicks = 0;
+        let seconds = 0;
+        
+        const emojis = FRUIT_EMOJIS; 
+
+        function initMemoryMatch() {
+            clearInterval(timer);
+            const board = document.getElementById("memory-board");
+            board.innerHTML = '';
+            
+            cards = [...emojis, ...emojis].sort(() => Math.random() - 0.5);
+            flippedCards = [];
+            matchedPairs = 0;
+            totalClicks = 0;
+            seconds = 0;
+
+            cards.forEach((emoji, index) => {
+                const card = document.createElement("div");
+                card.classList.add("card");
+                card.dataset.value = emoji;
+                card.dataset.index = index;
+                card.innerHTML = `
+                    <div class="card-inner">
+                        <div class="card-face card-back" style="background: var(--color-primary); color: white; display: flex; align-items: center; justify-content: center; font-size: 2em; border-radius: 8px;">?</div>
+                        <div class="card-face card-front" style="font-size: 2em; display: flex; align-items: center; justify-content: center; background: var(--color-card-bg);">${emoji}</div>
+                    </div>
+                `;
+                card.addEventListener("click", handleCardFlip);
+                board.appendChild(card);
+            });
+            
+            updateMemoryStatus();
+            timer = setInterval(() => {
+                seconds++;
+                updateMemoryStatus();
+            }, 1000);
+        }
+
+        function updateMemoryStatus() {
+            const statusElement = document.getElementById("memory-status");
+            if (!statusElement) return; 
+
+            statusElement.textContent = 
+                `Find the pairs! Clicks: ${totalClicks} | Matches: ${matchedPairs}/${emojis.length} | Time: ${seconds}s`;
+        }
+
+        function handleCardFlip(e) {
+            const card = e.currentTarget;
+            if (card.classList.contains('flipped') || card.classList.contains('matched') || flippedCards.length === 2) {
+                return;
+            }
+
+            card.classList.add('flipped');
+            flippedCards.push(card);
+            totalClicks++;
+            updateMemoryStatus();
+
+            if (flippedCards.length === 2) {
+                setTimeout(checkForMatch, 800);
+            }
+        }
+
+        function checkForMatch() {
+            const [card1, card2] = flippedCards;
+            const value1 = card1.dataset.value;
+            const value2 = card2.dataset.value;
+
+            if (value1 === value2) {
+                card1.classList.add('matched');
+                card2.classList.add('matched');
+                card1.removeEventListener('click', handleCardFlip);
+                card2.removeEventListener('click', handleCardFlip);
+                matchedPairs++;
+
+                if (matchedPairs === emojis.length) {
+                    clearInterval(timer);
+                    showModal("🏆 YOU WIN! 🏆", `You found all pairs in ${totalClicks} clicks and ${seconds} seconds!`, 'success');
+                }
+            } else {
+                card1.classList.remove('flipped');
+                card2.classList.remove('flipped');
+            }
+            flippedCards = [];
+        }
+        
+        /* CSS for Memory Match */
+        document.write(`
+        <style>
+            #memory-board {
+                display: grid;
+                grid-template-columns: repeat(4, 1fr);
+                gap: 10px;
+                max-width: 400px;
+                margin: 20px auto;
+            }
+            .card {
+                aspect-ratio: 1 / 1;
+                perspective: 1000px;
+                cursor: pointer;
+            }
+            .card-inner {
+                position: relative;
+                width: 100%;
+                height: 100%;
+                text-align: center;
+                transition: transform 0.6s;
+                transform-style: preserve-3d;
+                border-radius: 8px;
+                box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            }
+            .card.flipped .card-inner { transform: rotateY(180deg); }
+            .card-face {
+                position: absolute;
+                width: 100%;
+                height: 100%;
+                backface-visibility: hidden;
+                border-radius: 8px;
+            }
+            .card-back { background: var(--color-primary); color: white; }
+            .card-front { transform: rotateY(180deg); background: var(--color-card-bg); }
+            .card.matched .card-inner { border: 2px solid var(--color-success); }
+        </style>
+        `);
+
+
+        /* ======================== GAME: GUESS THE WORD (Code remains the same) ======================== */
+        let secretWord = "";
+        let maskedWord = [];
+        let wrongAttempts = 0;
+        let maxAttempts = 6;
+        let guessedLetters = new Set();
+        const wordList = ["PROGRAMMING", "JAVASCRIPT", "ARCADE", "MINIMAX", "RESPONSIVE", "SLIDER", "POPUPS", "DEVELOPER"];
+
+        function initWordGuess() {
+            secretWord = wordList[Math.floor(Math.random() * wordList.length)];
+            maskedWord = Array(secretWord.length).fill("_");
+            wrongAttempts = 0;
+            guessedLetters.clear();
+            document.getElementById("word-attempts").textContent = maxAttempts;
+            document.getElementById("word-display").textContent = maskedWord.join(" ");
+            document.getElementById("guessed-letters").textContent = "Guessed: None";
+            document.getElementById("letter-input").value = "";
+            document.getElementById("letter-input").disabled = false;
+        }
+
+        function guessLetter() {
+            const inputElement = document.getElementById("letter-input");
+            let guess = inputElement.value.toUpperCase();
+            inputElement.value = "";
+
+            if (!guess || guess.length !== 1 || !/^[A-Z]$/.test(guess)) {
+                showModal("Invalid Guess", "Please enter a single alphabetical letter.", 'danger');
+                return;
+            }
+
+            if (guessedLetters.has(guess)) {
+                showModal("Already Guessed", `You already tried the letter '${guess}'.`, 'info');
+                return;
+            }
+
+            guessedLetters.add(guess);
+            document.getElementById("guessed-letters").textContent = "Guessed: " + Array.from(guessedLetters).join(", ");
+            
+            let found = false;
+            for (let i = 0; i < secretWord.length; i++) {
+                if (secretWord[i] === guess) {
+                    maskedWord[i] = guess;
+                    found = true;
+                }
+            }
+
+            if (found) {
+                document.getElementById("word-display").textContent = maskedWord.join(" ");
+                if (maskedWord.join("") === secretWord) {
+                    showModal("🎉 CONGRATULATIONS! 🎉", `You guessed the word: ${secretWord}`, 'success');
+                    document.getElementById("letter-input").disabled = true;
+                }
+            } else {
+                wrongAttempts++;
+                document.getElementById("word-attempts").textContent = maxAttempts - wrongAttempts;
+                if (wrongAttempts >= maxAttempts) {
+                    showModal("❌ GAME OVER ❌", `The secret word was: ${secretWord}`, 'danger');
+                    document.getElementById("letter-input").disabled = true;
+                }
+            }
+        }
+        
+        /* ======================== GAME: NUMBER GUESS (Code remains the same) ======================== */
+        let secretNumber, attemptsLeft; 
+
+        function initNumberGuess() {
+            secretNumber = Math.floor(Math.random() * 20) + 1;
+            maxAttempts = 5; 
+            attemptsLeft = maxAttempts;
+            document.getElementById("number-result").textContent = `Attempts Left: ${attemptsLeft}/${maxAttempts}`;
+            document.getElementById("guess-input").value = "";
+            document.getElementById("guess-button").disabled = false;
+        }
+
+        function checkGuess() {
+            const input = document.getElementById("guess-input");
+            const guess = parseInt(input.value);
+            const result = document.getElementById("number-result");
+            const guessButton = document.getElementById("guess-button");
+
+            if (guessButton.disabled) return;
+            
+            if (isNaN(guess) || guess < 1 || guess > 20) {
+                showModal("Invalid Input", "Enter a number between 1 and 20.", 'danger');
+                return;
+            }
+            
+            attemptsLeft--;
+
+            if (guess === secretNumber) {
+                result.innerHTML = `<span style="color: var(--color-success);">🎉 Correct! The number was ${secretNumber}!</span>`;
+                guessButton.disabled = true;
+                showModal("Game Over", `You guessed correctly! The number was ${secretNumber}.`, 'success');
+            } else if (attemptsLeft <= 0) {
+                result.innerHTML = `<span style="color: var(--color-danger);">❌ Game Over! The secret number was ${secretNumber}.</span>`;
+                guessButton.disabled = true;
+                showModal("Game Over", `Out of attempts! The secret number was ${secretNumber}.`, 'danger');
+            } else {
+                let feedback = guess < secretNumber ? "Too low! ⬇️" : "Too high! ⬆️";
+                result.textContent = `${feedback} Attempts Left: ${attemptsLeft}/${maxAttempts}`;
+            }
+            
+            input.value = "";
+        }
+    </script>
+</body>
+</html>

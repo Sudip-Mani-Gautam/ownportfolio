@@ -1,17 +1,341 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Others — Sudip</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --primary-color: #4361ee;
+      --secondary-color: #3f37c9;
+      --accent-color: #4cc9f0;
+      --light-color: #f8f9fa;
+      --dark-color: #212529;
+      --success-color: #4bb543;
+      --transition: all 0.3s ease;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      line-height: 1.6;
+      color: var(--dark-color);
+      transition: var(--transition);
+      background-color: white;
+    }
+
+    body.dark-theme {
+      background-color: #121212;
+      color: #e0e0e0;
+    }
+
+    .navbar {
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      transition: var(--transition);
+    }
+
+    body.dark-theme .navbar {
+      background-color: #1e1e1e !important;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+    }
+
+    /* FIX: Navbar brand text color for dark mode */
+    .navbar-brand {
+      color: var(--dark-color) !important;
+    }
+
+    body.dark-theme .navbar-brand {
+      color: #ffffff !important;
+    }
+
+    .theme-toggle {
+      display: flex;
+      align-items: center;
+      background-color: #e9ecef;
+      border-radius: 50px;
+      padding: 5px;
+      width: 70px;
+      height: 35px;
+      position: relative;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    body.dark-theme .theme-toggle {
+      background-color: #333;
+    }
+
+    .toggle-knob {
+      position: absolute;
+      width: 27px;
+      height: 27px;
+      background-color: white;
+      border-radius: 50%;
+      left: 4px;
+      transition: var(--transition);
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    }
+
+    body.dark-theme .toggle-knob {
+      left: 39px;
+      background-color: #f8f9fa;
+    }
+
+    .icon-sun, .icon-moon {
+      font-size: 14px;
+      z-index: 1;
+      padding: 0 8px;
+    }
+
+    .icon-sun {
+      color: #f39c12;
+    }
+
+    .icon-moon {
+      color: #f1c40f;
+    }
+
+    .section-title {
+      position: relative;
+      padding-bottom: 15px;
+      margin-bottom: 30px;
+      color: var(--dark-color);
+    }
+
+    body.dark-theme .section-title {
+      color: #ffffff;
+    }
+
+    .section-title:after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 60px;
+      height: 3px;
+      background: var(--primary-color);
+      border-radius: 3px;
+    }
+
+    .skill-item {
+      margin-bottom: 25px;
+    }
+
+    .skill-name {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 8px;
+      color: var(--dark-color);
+    }
+
+    body.dark-theme .skill-name {
+      color: #e0e0e0;
+    }
+
+    .skill-bar {
+      height: 8px;
+      background-color: #e9ecef;
+      border-radius: 4px;
+      overflow: hidden;
+    }
+
+    body.dark-theme .skill-bar {
+      background-color: #333;
+    }
+
+    .skill-level {
+      height: 100%;
+      background: linear-gradient(90deg, var(--primary-color), var(--accent-color));
+      border-radius: 4px;
+      transition: width 1.5s ease-in-out;
+    }
+
+    .interest-card {
+      background: white;
+      border-radius: 10px;
+      padding: 25px;
+      text-align: center;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+      transition: var(--transition);
+      height: 100%;
+      color: var(--dark-color);
+    }
+
+    body.dark-theme .interest-card {
+      background-color: #1e1e1e;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+      color: #e0e0e0;
+    }
+
+    .interest-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    }
+
+    body.dark-theme .interest-card:hover {
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+    }
+
+    .interest-icon {
+      font-size: 2.5rem;
+      margin-bottom: 15px;
+      color: var(--primary-color);
+    }
+
+    .certification-card {
+      background: white;
+      border-radius: 10px;
+      padding: 25px;
+      margin-bottom: 20px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+      transition: var(--transition);
+      border-left: 4px solid var(--primary-color);
+      color: var(--dark-color);
+    }
+
+    body.dark-theme .certification-card {
+      background-color: #1e1e1e;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+      color: #e0e0e0;
+    }
+
+    .certification-card:hover {
+      transform: translateX(5px);
+    }
+
+    .language-item {
+      display: flex;
+      align-items: center;
+      margin-bottom: 15px;
+      padding: 10px 15px;
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+      color: var(--dark-color);
+    }
+
+    body.dark-theme .language-item {
+      background-color: #1e1e1e;
+      box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+      color: #e0e0e0;
+    }
+
+    .language-flag {
+      width: 30px;
+      height: 20px;
+      margin-right: 15px;
+      border-radius: 2px;
+    }
+
+    .bg-grey {
+      background-color: #f8f9fa;
+    }
+
+    body.dark-theme .bg-grey {
+      background-color: #1a1a1a;
+    }
+
+    .footer-link {
+      color: #6c757d;
+      text-decoration: none;
+      transition: var(--transition);
+    }
+
+    .footer-link:hover {
+      color: var(--primary-color);
+    }
+
+    body.dark-theme .footer-link {
+      color: #aaa;
+    }
+
+    body.dark-theme .footer-link:hover {
+      color: var(--accent-color);
+    }
+
+    .nav-link {
+      transition: var(--transition);
+      color: #6c757d !important;
+    }
+
+    .nav-link:hover {
+      color: var(--primary-color) !important;
+    }
+
+    body.dark-theme .nav-link {
+      color: #e0e0e0 !important;
+    }
+
+    body.dark-theme .nav-link:hover {
+      color: var(--accent-color) !important;
+    }
+
+    .nav-link.active {
+      color: var(--primary-color) !important;
+      font-weight: 600;
+    }
+
+    body.dark-theme .nav-link.active {
+      color: var(--accent-color) !important;
+    }
+
+    .progress-animate {
+      animation: progressAnimation 1.5s ease-in-out;
+    }
+
+    @keyframes progressAnimation {
+      0% { width: 0%; }
+    }
+
+    /* Fix for text-muted class in dark mode */
+    .text-muted {
+      color: #6c757d !important;
+    }
+
+    body.dark-theme .text-muted {
+      color: #a0a0a0 !important;
+    }
+
+    /* Fix for lead text */
+    .lead {
+      color: var(--dark-color);
+    }
+
+    body.dark-theme .lead {
+      color: #d0d0d0;
+    }
+
+    /* Fix for card titles and text */
+    h1, h2, h3, h4, h5, h6 {
+      color: var(--dark-color);
+    }
+
+    body.dark-theme h1,
+    body.dark-theme h2,
+    body.dark-theme h3,
+    body.dark-theme h4,
+    body.dark-theme h5,
+    body.dark-theme h6 {
+      color: #ffffff;
+    }
+
+    /* Fix for small text */
+    .small {
+      color: var(--dark-color);
+    }
+
+    body.dark-theme .small {
+      color: #d0d0d0;
+    }
+  </style>
 </head>
 <body class="light-theme">
   <!-- NAVBAR -->
   <nav class="navbar navbar-expand-lg navbar-light shadow-sm py-3">
     <div class="container">
-      <a class="navbar-brand fw-bold" href="index.html">Sudip M. Gautam</a>
+      <!-- FIX: Added explicit color styling to navbar brand -->
+      <a class="navbar-brand fw-bold" href="index.html">Sudip Mani Gautam</a>
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMain">
         <span class="navbar-toggler-icon"></span>
       </button>
@@ -22,7 +346,7 @@
           <li class="nav-item"><a class="nav-link" href="about.html">About</a></li>
           <li class="nav-item"><a class="nav-link" href="portfolio.html">Portfolio</a></li>
           <li class="nav-item"><a class="nav-link" href="contact.html">Contact</a></li>
-          <li class="nav-item d-lg-none"><a class="nav-link" href="#">Others</a></li>
+          <li class="nav-item"><a class="nav-link active" href="others.html">Others</a></li>
           <li class="nav-item ms-3">
             <!-- Theme toggle -->
             <div class="theme-toggle" id="themeToggle" title="Toggle light/dark">
@@ -37,12 +361,285 @@
   </nav>
 
   <main class="container py-5">
-    <h2>Others</h2>
-    <p>This is the others page. Add your additional content here.</p>
+    <div class="row">
+      <div class="col-12 mb-5">
+        <h1 class="section-title">Additional Skills & Interests</h1>
+        <p class="lead">Beyond my core technical skills, here are some additional abilities, certifications, and personal interests that shape my approach to development and problem-solving.</p>
+      </div>
+    </div>
+
+    <!-- Skills Section -->
+    <div class="row mb-5">
+      <div class="col-lg-6 mb-4">
+        <h3 class="mb-4">Technical Skills</h3>
+        
+        <div class="skill-item">
+          <div class="skill-name">
+            <span>Git & Version Control</span>
+            <span>90%</span>
+          </div>
+          <div class="skill-bar">
+            <div class="skill-level" style="width: 90%;"></div>
+          </div>
+        </div>
+        
+        <div class="skill-item">
+          <div class="skill-name">
+            <span>UI/UX Design Principles</span>
+            <span>75%</span>
+          </div>
+          <div class="skill-bar">
+            <div class="skill-level" style="width: 75%;"></div>
+          </div>
+        </div>
+        
+        <div class="skill-item">
+          <div class="skill-name">
+            <span>RESTful APIs</span>
+            <span>85%</span>
+          </div>
+          <div class="skill-bar">
+            <div class="skill-level" style="width: 85%;"></div>
+          </div>
+        </div>
+        
+        <div class="skill-item">
+          <div class="skill-name">
+            <span>Database Design</span>
+            <span>80%</span>
+          </div>
+          <div class="skill-bar">
+            <div class="skill-level" style="width: 80%;"></div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="col-lg-6 mb-4">
+        <h3 class="mb-4">Soft Skills</h3>
+        
+        <div class="skill-item">
+          <div class="skill-name">
+            <span>Problem Solving</span>
+            <span>95%</span>
+          </div>
+          <div class="skill-bar">
+            <div class="skill-level" style="width: 95%;"></div>
+          </div>
+        </div>
+        
+        <div class="skill-item">
+          <div class="skill-name">
+            <span>Team Collaboration</span>
+            <span>90%</span>
+          </div>
+          <div class="skill-bar">
+            <div class="skill-level" style="width: 90%;"></div>
+          </div>
+        </div>
+        
+        <div class="skill-item">
+          <div class="skill-name">
+            <span>Communication</span>
+            <span>85%</span>
+          </div>
+          <div class="skill-bar">
+            <div class="skill-level" style="width: 85%;"></div>
+          </div>
+        </div>
+        
+        <div class="skill-item">
+          <div class="skill-name">
+            <span>Project Management</span>
+            <span>80%</span>
+          </div>
+          <div class="skill-bar">
+            <div class="skill-level" style="width: 80%;"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Interests Section -->
+    <div class="row mb-5">
+      <div class="col-12">
+        <h3 class="section-title">Personal Interests</h3>
+      </div>
+      
+      <div class="col-md-4 mb-4">
+        <div class="interest-card">
+          <div class="interest-icon">
+            <i class="fas fa-code"></i>
+          </div>
+          <h5>Open Source Contribution</h5>
+          <p>Actively contributing to open source projects and exploring new technologies in my free time.</p>
+        </div>
+      </div>
+      
+      <div class="col-md-4 mb-4">
+        <div class="interest-card">
+          <div class="interest-icon">
+            <i class="fas fa-book"></i>
+          </div>
+          <h5>Technical Reading</h5>
+          <p>Regularly reading tech blogs, documentation, and books to stay updated with industry trends.</p>
+        </div>
+      </div>
+      
+      <div class="col-md-4 mb-4">
+        <div class="interest-card">
+          <div class="interest-icon">
+            <i class="fas fa-robot"></i>
+          </div>
+          <h5>AI & Machine Learning</h5>
+          <p>Exploring AI applications and machine learning concepts for future project implementations.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Certifications Section -->
+    <div class="row mb-5">
+      <div class="col-12">
+        <h3 class="section-title">Certifications & Achievements</h3>
+      </div>
+      
+      <div class="col-12">
+        <div class="certification-card">
+          <div class="d-flex justify-content-between align-items-start">
+            <div>
+              <h5>Full Stack Web Development Certification</h5>
+              <p class="text-muted">FreeCodeCamp | 2023</p>
+              <p>Completed comprehensive training in modern web development technologies including HTML5, CSS3, JavaScript, Node.js, and databases.</p>
+            </div>
+            <span class="badge bg-primary">Verified</span>
+          </div>
+        </div>
+        
+        <div class="certification-card">
+          <div class="d-flex justify-content-between align-items-start">
+            <div>
+              <h5>JavaScript Algorithms and Data Structures</h5>
+              <p class="text-muted">FreeCodeCamp | 2023</p>
+              <p>Mastered fundamental algorithms and data structures concepts while solving complex coding challenges.</p>
+            </div>
+            <span class="badge bg-primary">Verified</span>
+          </div>
+        </div>
+        
+        <div class="certification-card">
+          <div class="d-flex justify-content-between align-items-start">
+            <div>
+              <h5>Responsive Web Design</h5>
+              <p class="text-muted">FreeCodeCamp | 2022</p>
+              <p>Learned to create responsive, mobile-first websites using modern CSS techniques and frameworks.</p>
+            </div>
+            <span class="badge bg-primary">Verified</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Languages Section -->
+    <div class="row">
+      <div class="col-12">
+        <h3 class="section-title">Languages</h3>
+      </div>
+      
+      <div class="col-md-6 mb-4">
+        <div class="language-item">
+          <img src="https://flagcdn.com/w40/np.png" class="language-flag" alt="Nepal Flag">
+          <div>
+            <h6 class="mb-0">Nepali</h6>
+            <small class="text-muted">Native</small>
+          </div>
+        </div>
+        
+        <div class="language-item">
+          <img src="https://flagcdn.com/w40/gb.png" class="language-flag" alt="English Flag">
+          <div>
+            <h6 class="mb-0">English</h6>
+            <small class="text-muted">Professional Proficiency</small>
+          </div>
+        </div>
+      </div>
+      
+      <div class="col-md-6 mb-4">
+        <div class="language-item">
+          <img src="https://flagcdn.com/w40/in.png" class="language-flag" alt="Hindi Flag">
+          <div>
+            <h6 class="mb-0">Hindi</h6>
+            <small class="text-muted">Conversational</small>
+          </div>
+        </div>
+        
+        <div class="language-item">
+          <img src="https://flagcdn.com/w40/fr.png" class="language-flag" alt="French Flag">
+          <div>
+            <h6 class="mb-0">French</h6>
+            <small class="text-muted">Basic</small>
+          </div>
+        </div>
+      </div>
+    </div>
   </main>
 
-  <footer class="bg-white border-top py-3 text-center small">© <span id="year"></span> Sudip M. Gautam</footer>
+  <!-- FOOTER -->
+  <footer class="bg-grey border-top mt-5">
+    <div class="container py-4 d-flex flex-column flex-md-row justify-content-between align-items-center">
+      <div class="small">© <span id="year"></span> Sudip Mani Gautam</div>
+      <div>
+        <a class="me-3 footer-link" href="index.html">Home</a>
+        <a class="me-3 footer-link" href="about.html">About</a>
+        <a class="me-3 footer-link" href="portfolio.html">Portfolio</a>
+        <a class="me-3 footer-link" href="contact.html">Contact</a>
+        <a class="me-3 footer-link" href="others.html">Others</a>
+      </div>
+    </div>
+  </footer>
 
-  <script src="js/main.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    // Set current year in footer
+    document.getElementById("year").textContent = new Date().getFullYear();
+
+    // Dark mode toggle functionality
+    const themeToggle = document.getElementById("themeToggle");
+    themeToggle.addEventListener("click", () => {
+      document.body.classList.toggle("dark-theme");
+      document.body.classList.toggle("light-theme");
+      
+      // Save theme preference to localStorage
+      const isDark = document.body.classList.contains("dark-theme");
+      localStorage.setItem("theme", isDark ? "dark" : "light");
+    });
+
+    // Check for saved theme preference
+    const savedTheme = localStorage.getItem("theme");
+    if (savedTheme === "dark") {
+      document.body.classList.add("dark-theme");
+      document.body.classList.remove("light-theme");
+    }
+
+    // Animate skill bars when they come into view
+    const observerOptions = {
+      threshold: 0.5
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const skillLevels = entry.target.querySelectorAll('.skill-level');
+          skillLevels.forEach(level => {
+            level.classList.add('progress-animate');
+          });
+        }
+      });
+    }, observerOptions);
+
+    // Observe skill sections
+    const skillSections = document.querySelectorAll('.skill-item');
+    skillSections.forEach(section => {
+      observer.observe(section);
+    });
+  </script>
 </body>
 </html>

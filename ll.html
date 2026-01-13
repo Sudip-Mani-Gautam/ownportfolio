@@ -1,0 +1,334 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>iVote — Dashboard (Single File)</title>
+  <style>
+    :root{
+      --bg:#0f1724; --card:#0b1320; --muted:#9aa6b2; --accent:#06b6d4; --success:#10b981; --danger:#ef4444; --glass: rgba(255,255,255,0.03);
+      --radius:12px; --gap:16px; --maxw:1200px;
+    }
+    *{box-sizing:border-box;font-family:Inter, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;}
+    body{margin:0;background:linear-gradient(180deg,#071021 0%, #071827 60%);color:#e6eef6;display:flex;justify-content:center;padding:28px 16px;}
+    .wrap{width:100%;max-width:var(--maxw)}
+    header{display:flex;align-items:center;gap:16px;margin-bottom:18px}
+    .brand{display:flex;align-items:center;gap:12px}
+    .logo{width:48px;height:48px;border-radius:10px;background:linear-gradient(135deg,var(--accent),#7c3aed);display:flex;align-items:center;justify-content:center;font-weight:700}
+    h1{font-size:18px;margin:0}
+    .top-actions{margin-left:auto;display:flex;gap:8px;align-items:center}
+    button, .btn{background:var(--glass);border:1px solid rgba(255,255,255,0.04);padding:8px 12px;border-radius:10px;color:var(--muted);cursor:pointer}
+
+    .layout{display:grid;grid-template-columns:260px 1fr;gap:var(--gap)}
+
+    /* Sidebar */
+    nav{background:linear-gradient(180deg, rgba(255,255,255,0.01), transparent);border-radius:var(--radius);padding:18px;height:calc(100vh - 160px);position:sticky;top:28px}
+    nav .role{font-size:13px;color:var(--muted);margin-bottom:12px}
+    nav ul{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:8px}
+    nav li{display:flex;align-items:center;gap:10px;padding:10px;border-radius:10px;cursor:pointer}
+    nav li.active{background:rgba(255,255,255,0.02);box-shadow:inset 0 1px 0 rgba(255,255,255,0.02)}
+    nav li:hover{background:rgba(255,255,255,0.01)}
+    nav .small{font-size:13px;color:var(--muted)}
+
+    /* Main */
+    main{min-height:600px}
+    .grid{display:grid;grid-template-columns:repeat(4,1fr);gap:var(--gap);margin-bottom:var(--gap)}
+    .card{background:var(--card);padding:14px;border-radius:12px;box-shadow:0 6px 18px rgba(2,6,23,0.6);border:1px solid rgba(255,255,255,0.02)}
+    .stat{display:flex;flex-direction:column;gap:6px}
+    .stat strong{font-size:20px}
+    .muted{color:var(--muted);font-size:13px}
+
+    .wide{grid-column:span 2}
+    .table{overflow:auto}
+    table{width:100%;border-collapse:collapse;color:#cfe7f3}
+    th,td{padding:10px;text-align:left;border-bottom:1px dashed rgba(255,255,255,0.03);font-size:13px}
+    th{color:var(--muted);font-weight:600}
+
+    .actions{display:flex;gap:8px}
+    .pill{display:inline-block;padding:6px 10px;border-radius:999px;font-size:12px}
+
+    footer{margin-top:18px;color:var(--muted);font-size:13px}
+
+    /* Responsive */
+    @media (max-width:980px){.grid{grid-template-columns:repeat(2,1fr)}nav{display:none} .layout{grid-template-columns:1fr}}
+    @media (max-width:560px){.grid{grid-template-columns:1fr}}
+
+    /* small helpers */
+    .flex{display:flex;align-items:center;gap:8px}
+    .search{background:var(--glass);padding:8px;border-radius:10px;border:1px solid rgba(255,255,255,0.02);display:flex;gap:8px;align-items:center}
+    .chart-wrap{height:160px}
+    .candidate-photo{width:36px;height:36px;border-radius:8px;background:#123;color:#fff;display:inline-flex;align-items:center;justify-content:center;font-weight:700}
+
+    /* modal */
+    .modal-backdrop{position:fixed;inset:0;background:rgba(2,6,23,0.6);display:none;align-items:center;justify-content:center}
+    .modal{background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));padding:18px;border-radius:14px;width:680px;max-width:95%}
+    .form-row{display:flex;gap:8px}
+    .form-row > *{flex:1}
+    input,select,textarea{width:100%;padding:10px;border-radius:8px;border:1px solid rgba(255,255,255,0.03);background:transparent;color:inherit}
+
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div class="brand">
+        <div class="logo">iV</div>
+        <div>
+          <h1>iVote — Admin Dashboard</h1>
+          <div class="muted">Manage elections, candidates, voters & live-results</div>
+        </div>
+      </div>
+
+      <div class="top-actions">
+        <div class="search"><input id="quickSearch" placeholder="Search voters, candidates, elections..." style="background:transparent;border:0;color:inherit;outline:none"><button class="btn" onclick="doSearch()">Search</button></div>
+        <button onclick="openModal()" title="Add candidate">+ Add Candidate</button>
+        <button class="btn">Export CSV</button>
+      </div>
+    </header>
+
+    <div class="layout">
+      <nav>
+        <div class="role">Signed in as <strong>Admin</strong></div>
+        <ul>
+          <li class="active">Dashboard</li>
+          <li>Elections</li>
+          <li>Candidates</li>
+          <li>Voters</li>
+          <li>Verification</li>
+          <li>Reports</li>
+          <li>Settings</li>
+        </ul>
+
+        <div style="margin-top:18px" class="muted">Shortcuts</div>
+        <div style="display:flex;gap:8px;margin-top:8px;flex-wrap:wrap">
+          <div class="pill" style="background:rgba(255,255,255,0.02)">Create election</div>
+          <div class="pill" style="background:rgba(255,255,255,0.02)">Verify voters</div>
+          <div class="pill" style="background:rgba(255,255,255,0.02)">Count ballots</div>
+        </div>
+      </nav>
+
+      <main>
+        <section class="grid">
+          <div class="card stat">
+            <div class="muted">Total Voters</div>
+            <strong id="totalVoters">42,128</strong>
+            <div class="muted">Registered, verified and unverified combined</div>
+          </div>
+
+          <div class="card stat">
+            <div class="muted">Active Elections</div>
+            <strong id="activeElections">3</strong>
+            <div class="muted">Running, scheduled or counting</div>
+          </div>
+
+          <div class="card stat">
+            <div class="muted">Total Votes Cast</div>
+            <strong id="votesCast">18,451</strong>
+            <div class="muted">Real-time ballot counts</div>
+          </div>
+
+          <div class="card stat">
+            <div class="muted">Turnout</div>
+            <strong id="turnout">43.79%</strong>
+            <div class="muted">Percent of registered voters who voted</div>
+          </div>
+
+          <div class="card wide">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+              <div>
+                <div class="muted">Live Results</div>
+                <strong>Presidential — National</strong>
+              </div>
+              <div class="muted">Updated: <span id="lastUpdated">Nov 24, 2025 18:00</span></div>
+            </div>
+
+            <div style="display:flex;gap:12px;align-items:flex-end">
+              <div style="flex:1">
+                <div class="chart-wrap card" style="padding:12px">
+                  <canvas id="barChart" width="400" height="150"></canvas>
+                </div>
+              </div>
+
+              <div style="width:220px">
+                <div class="card" style="margin-bottom:8px;padding:12px">
+                  <div style="display:flex;justify-content:space-between"><div class="muted">Leading</div><div><strong id="leaderName">Alex Sharma</strong></div></div>
+                  <div class="muted">Votes: <strong id="leaderVotes">7,452</strong></div>
+                </div>
+
+                <div class="card" style="padding:12px">
+                  <div class="muted">Next Update</div>
+                  <div><strong id="nextUpdate">Every 30s</strong></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="muted">Verification Queue</div>
+            <strong id="verifyQueue">1,205</strong>
+            <div class="muted">Pending KYC / ID checks</div>
+          </div>
+
+          <div class="card">
+            <div class="muted">Issues Reported</div>
+            <strong id="issues">12</strong>
+            <div class="muted">Support tickets flagged</div>
+          </div>
+
+          <div class="card">
+            <div class="muted">System Health</div>
+            <strong id="sysHealth">All systems nominal</strong>
+            <div class="muted">Latency & error rate</div>
+          </div>
+
+          <div class="card">
+            <div class="muted">Seats / Districts</div>
+            <strong id="districts">67</strong>
+            <div class="muted">Regions participating</div>
+          </div>
+
+          <div class="card wide">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+              <div>
+                <div class="muted">Recent Activity</div>
+                <strong>Audit log & actions</strong>
+              </div>
+              <div class="muted">Filter: <select id="logFilter"><option>All</option><option>Voter</option><option>Admin</option><option>System</option></select></div>
+            </div>
+
+            <div class="table">
+              <table>
+                <thead><tr><th>Time</th><th>User</th><th>Action</th><th>Details</th></tr></thead>
+                <tbody id="auditLog">
+                  <tr><td>18:12</td><td>system</td><td>Batch import</td><td>Imported 1,200 voters (CSV)</td></tr>
+                  <tr><td>17:58</td><td>verifier01</td><td>Verified</td><td>Voter ID 1902 — approved</td></tr>
+                  <tr><td>17:20</td><td>admin</td><td>Election created</td><td>Local council — Kathmandu</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="card wide">
+            <div class="muted">Candidates</div>
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-top:6px;margin-bottom:10px">
+              <strong>Manage candidates</strong>
+              <div class="muted">Sort by: <select id="candSort"><option>Votes (desc)</option><option>Name</option><option>Party</option></select></div>
+            </div>
+
+            <div class="table">
+              <table>
+                <thead><tr><th>Candidate</th><th>Party</th><th>Votes</th><th>%</th><th>Actions</th></tr></thead>
+                <tbody id="candidatesList">
+                  <tr><td><div class="flex"><div class="candidate-photo">AS</div><div>Alex Sharma</div></div></td><td>Unity Party</td><td>7,452</td><td>40.4%</td><td class="actions"><button class="btn">Edit</button><button class="btn">Ban</button></td></tr>
+                  <tr><td><div class="flex"><div class="candidate-photo">RK</div><div>Rita Koirala</div></div></td><td>People's Voice</td><td>5,120</td><td>27.7%</td><td class="actions"><button class="btn">Edit</button><button class="btn">Ban</button></td></tr>
+                  <tr><td><div class="flex"><div class="candidate-photo">MS</div><div>Marco Singh</div></div></td><td>Green Front</td><td>3,879</td><td>21.0%</td><td class="actions"><button class="btn">Edit</button><button class="btn">Ban</button></td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+        </section>
+
+        <footer>
+          © <span id="year">2025</span> iVote. System status: <span id="status">Operational</span>. Last audit: Nov 24, 2025.
+        </footer>
+      </main>
+    </div>
+  </div>
+
+  <!-- Modal for Add Candidate -->
+  <div id="modal" class="modal-backdrop">
+    <div class="modal">
+      <h3>Add / Edit Candidate</h3>
+      <div style="margin-top:8px" class="form-row">
+        <input id="candName" placeholder="Full name" />
+        <input id="candDOB" placeholder="Date of birth" />
+      </div>
+      <div style="margin-top:8px" class="form-row">
+        <input id="candParty" placeholder="Party" />
+        <input id="candSymbol" placeholder="Election symbol" />
+      </div>
+      <div style="margin-top:8px">
+        <textarea id="candManifesto" rows="4" placeholder="Manifesto / short bio"></textarea>
+      </div>
+      <div style="display:flex;justify-content:flex-end;gap:8px;margin-top:12px">
+        <button onclick="closeModal()">Cancel</button>
+        <button onclick="saveCandidate()">Save Candidate</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Demo: simple bar chart without external lib
+    const barCanvas = document.getElementById('barChart');
+    const ctx = barCanvas.getContext('2d');
+    const data = [{name:'Alex Sharma',v:7452},{name:'Rita Koirala',v:5120},{name:'Marco Singh',v:3879},{name:'Other',v:0}];
+
+    function drawBarChart(){
+      const W = barCanvas.width; const H = barCanvas.height; ctx.clearRect(0,0,W,H);
+      const padding = 20; const max = Math.max(...data.map(d=>d.v)) || 1;
+      const barW = (W - padding*2) / data.length - 12;
+      data.forEach((d,i)=>{
+        const x = padding + i*(barW+12);
+        const h = Math.round((d.v/max)*(H-padding*2));
+        const y = H - padding - h;
+        // bar
+        ctx.fillStyle = '#0ea5a4';
+        ctx.fillRect(x,y,barW,h);
+        // label
+        ctx.fillStyle = '#cfe7f3';
+        ctx.font = '12px sans-serif';
+        ctx.fillText(d.name, x, H - 6);
+        // value
+        ctx.fillText(d.v, x, y - 6);
+      })
+    }
+    drawBarChart();
+
+    // Modal controls
+    function openModal(){document.getElementById('modal').style.display='flex'}
+    function closeModal(){document.getElementById('modal').style.display='none'}
+
+    function saveCandidate(){
+      const name = document.getElementById('candName').value.trim();
+      if(!name){alert('Please enter a name');return}
+      // Placeholder: append to table
+      const tbody = document.getElementById('candidatesList');
+      const tr = document.createElement('tr');
+      tr.innerHTML = `<td><div class="flex"><div class="candidate-photo">${name.split(' ').map(s=>s[0]).slice(0,2).join('')}</div><div>${name}</div></div></td><td>${document.getElementById('candParty').value||'Independent'}</td><td>0</td><td>0%</td><td class="actions"><button class="btn">Edit</button><button class="btn">Ban</button></td>`;
+      tbody.appendChild(tr);
+      closeModal();
+    }
+
+    function doSearch(){
+      const q = document.getElementById('quickSearch').value.toLowerCase();
+      if(!q) return alert('Type something to search');
+      // Very small demo: highlight rows that match
+      const rows = document.querySelectorAll('#candidatesList tr');
+      rows.forEach(r=>{r.style.opacity = r.innerText.toLowerCase().includes(q)?'1':'0.25'})
+    }
+
+    // simple dynamic update demo
+    setInterval(()=>{
+      // simulate vote increase
+      data[0].v += Math.floor(Math.random()*5);
+      data[1].v += Math.floor(Math.random()*4);
+      data[2].v += Math.floor(Math.random()*3);
+      document.getElementById('votesCast').innerText = data.reduce((s,d)=>s+d.v,0);
+      // recompute percentages
+      const total = data.reduce((s,d)=>s+d.v,0)||1;
+      const rows = document.querySelectorAll('#candidatesList tr');
+      rows.forEach((r,i)=>{ if(data[i]){ r.cells[2].innerText = data[i].v; r.cells[3].innerText = ((data[i].v/total)*100).toFixed(1)+'%'}})
+      // leader
+      const leader = data.reduce((a,b)=>a.v>b.v?a:b,{v:-1});
+      document.getElementById('leaderName').innerText = leader.name; document.getElementById('leaderVotes').innerText = leader.v;
+      drawBarChart();
+      document.getElementById('lastUpdated').innerText = new Date().toLocaleString();
+    }, 30000);
+
+    // small initialization
+    document.getElementById('totalVoters').innerText = '42,128';
+    document.getElementById('year').innerText = new Date().getFullYear();
+  </script>
+</body>
+</html>

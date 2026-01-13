@@ -1,0 +1,107 @@
+/* body {
+  transition: background-color 0.4s, color 0.4s;
+}
+
+.hero-section img {
+  border: 4px solid #000;
+}
+
+.dark-mode {
+  background-color: #121212;
+  color: #e0e0e0;
+}
+
+.dark-mode .navbar,
+.dark-mode footer {
+  background-color: #1f1f1f !important;
+}
+
+.card {
+  border-radius: 10px;
+}
+
+.btn-primary {
+  border-radius: 20px;
+}
+*/
+:root{
+  --bg: #f7fbff;        /* soft very-light-blue background */
+  --card: #ffffff;
+  --text: #0f1724;
+  --muted: #6b7280;
+  --accent: #0d6efd;    /* bootstrap primary */
+}
+
+/* Dark theme vars */
+body.dark-theme{
+  --bg: #0b1220;
+  --card: #0f1724;
+  --text: #ffffff;
+  --muted: #cccccc;
+  --accent: #4dabf7;    /* lighter blue for dark mode */
+}
+
+body{
+  background: var(--bg);
+  color: var(--text);
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+}
+
+/* profile square */
+.profile-square{
+  width: 220px;
+  height: 220px;
+  overflow: hidden;
+  border-radius: 12px;
+  background: linear-gradient(180deg, var(--card), var(--bg));
+  box-shadow: 0 6px 18px rgba(13,110,253,0.06);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+.profile-square img{ width:100%; height:100%; object-fit:cover; }
+
+/* cards */
+.card{ background: var(--card); color: var(--text); border: none; box-shadow: 0 6px 18px rgba(2,6,23,0.04); }
+
+/* navbar */
+.navbar{ background: var(--card) !important; border-bottom: 1px solid rgba(0,0,0,0.1); }
+.dark-theme .navbar{ border-bottom-color: rgba(255,255,255,0.1); color: var(--text) !important; }
+.dark-theme .navbar-brand{ color: var(--text) !important; }
+.dark-theme .navbar-nav .nav-link{ color: var(--text) !important; }
+.dark-theme .text-muted{ color: var(--muted) !important; }
+
+/* footer */
+footer{ background: var(--card) !important; border-top: 1px solid rgba(0,0,0,0.1); color: var(--text) !important; }
+.dark-theme footer{ border-top-color: rgba(255,255,255,0.1); }
+
+/* projects section */
+.projects{ background: var(--bg) !important; color: var(--text) !important; }
+.dark-theme .projects .card-text{ color: var(--muted) !important; }
+
+/* resume section */
+.resume-section{ background: var(--bg) !important; color: var(--text) !important; }
+
+/* hero section */
+.hero-section{ background: var(--bg) !important; color: var(--text) !important; }
+
+/* footer links */
+.footer-link{ color: var(--muted); text-decoration:none;}
+.footer-link:hover{ color: var(--accent); }
+
+/* small theme toggle (sliding with sun/moon) */
+.theme-toggle{
+  width:70px; height:30px; border-radius:40px; position:relative; display:inline-flex; align-items:center; justify-content:space-between; padding:4px; cursor:pointer;
+  background: linear-gradient(90deg,var(--card),var(--bg)); box-shadow: 0 2px 6px rgba(2,6,23,0.06);
+}
+.theme-toggle .toggle-knob{
+  width:28px; height:28px; background:var(--card); border-radius:50%; position:absolute; left:4px; transition: all .28s ease;
+  box-shadow:0 6px 12px rgba(2,6,23,0.08);
+}
+body.dark-theme .theme-toggle .toggle-knob{ left:38px; }
+.theme-toggle .icon-sun, .theme-toggle .icon-moon{ font-size:14px; opacity:0.95; pointer-events:none; z-index:1; }
+
+/* small responsive niceties */
+@media (max-width:767px){
+  .profile-square{ width:160px; height:160px; }
+}
